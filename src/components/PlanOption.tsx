@@ -1,7 +1,19 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "../index.css";
 
 const PlanOption: React.FC = () => {
+  // レスポンシブ判定用state
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const check = () => setIsMobile(window.innerWidth <= 700);
+      check();
+      window.addEventListener('resize', check);
+      return () => window.removeEventListener('resize', check);
+    }
+  }, []);
+
   // レスポンシブ用のスタイル
   const styles = {
     root: {
@@ -12,11 +24,11 @@ const PlanOption: React.FC = () => {
     container: {
       maxWidth: 1200,
       margin: '0 auto',
-      padding: '48px 8px 0 8px',
+      padding: isMobile ? '32px 4px 0 4px' : '48px 8px 0 8px',
       textAlign: 'center' as const,
     },
     title: {
-      fontSize: '2.5rem',
+      fontSize: isMobile ? '2rem' : '2.5rem',
       fontWeight: 700,
       color: '#4f3ca7',
       marginBottom: 12,
@@ -30,7 +42,7 @@ const PlanOption: React.FC = () => {
     },
     planRow: {
       display: 'flex',
-      gap: 32,
+      gap: isMobile ? 16 : 32,
       justifyContent: 'center',
       alignItems: 'stretch',
       marginBottom: 48,
@@ -40,9 +52,9 @@ const PlanOption: React.FC = () => {
       background: '#fff',
       borderRadius: 20,
       boxShadow: '0 6px 32px #bdbdbd22',
-      padding: 36,
-      minWidth: 260,
-      maxWidth: 360,
+      padding: isMobile ? 20 : 36,
+      minWidth: isMobile ? 220 : 260, // ←数値で統一
+      maxWidth: isMobile ? '98%' : 360, // ←%は文字列、pxは数値
       flex: '1 1 320px',
       margin: '0 8px',
       display: 'flex',
@@ -53,7 +65,7 @@ const PlanOption: React.FC = () => {
     },
     planCardFeatured: {
       border: '2.5px solid #764ba2',
-      paddingTop: 72,
+      paddingTop: isMobile ? 48 : 72, // ←数値で統一
     },
     badge: {
       position: 'absolute' as const,
@@ -63,8 +75,8 @@ const PlanOption: React.FC = () => {
       background: '#764ba2',
       color: '#fff',
       borderRadius: 14,
-      padding: '6px 24px',
-      fontSize: 15,
+      padding: isMobile ? '4px 12px' : '6px 24px',
+      fontSize: isMobile ? 13 : 15,
       fontWeight: 600,
       letterSpacing: 1,
       boxShadow: '0 2px 8px #bdbdbd33',
@@ -77,7 +89,7 @@ const PlanOption: React.FC = () => {
       marginBottom: 12,
     },
     planPrice: {
-      fontSize: '2rem',
+      fontSize: isMobile ? '1.3rem' : '2rem',
       fontWeight: 700,
       color: '#333',
       marginBottom: 12,
@@ -95,7 +107,7 @@ const PlanOption: React.FC = () => {
       background: '#fff',
       borderRadius: 20,
       boxShadow: '0 4px 20px #bdbdbd22',
-      padding: 36,
+      padding: isMobile ? 20 : 36,
       margin: '0 auto 48px auto',
       maxWidth: 900,
       display: 'flex',
@@ -105,13 +117,13 @@ const PlanOption: React.FC = () => {
     optionRow: {
       display: 'flex',
       flexWrap: 'wrap' as const,
-      gap: 24,
+      gap: isMobile ? 12 : 24,
       justifyContent: 'center',
       width: '100%',
     },
     optionCard: {
-      minWidth: 180,
-      maxWidth: 280,
+      minWidth: isMobile ? 120 : 180, // ←数値で統一
+      maxWidth: isMobile ? '98%' : 280, // ←%は文字列、pxは数値
       flex: '1 1 220px',
       margin: '0 8px',
       marginBottom: 16,
@@ -142,8 +154,8 @@ const PlanOption: React.FC = () => {
       display: 'inline-block',
     },
     orderBtn: {
-      padding: '20px 60px',
-      fontSize: '1.2rem',
+      padding: isMobile ? '14px 24px' : '20px 60px',
+      fontSize: isMobile ? '1rem' : '1.2rem',
       background: 'linear-gradient(90deg, #764ba2 0%, #667eea 100%)',
       color: '#fff',
       border: 'none',
@@ -156,27 +168,6 @@ const PlanOption: React.FC = () => {
       margin: '48px 0 0 0',
     },
   };
-
-  // メディアクエリで動的にスタイルを調整
-  const media = window.matchMedia('(max-width: 700px)').matches;
-  if (media) {
-    styles.title.fontSize = '2rem';
-    styles.container.padding = '32px 4px 0 4px';
-    styles.planRow.gap = 16;
-    styles.planCard.padding = 20;
-    styles.planCard.minWidth = '220px';
-    styles.planCard.maxWidth = '98%';
-    styles.planPrice.fontSize = '1.3rem';
-    styles.planCardFeatured.paddingTop = 48;
-    styles.badge.fontSize = 13;
-    styles.badge.padding = '4px 12px';
-    styles.optionSection.padding = 20;
-    styles.optionRow.gap = 12;
-    styles.optionCard.minWidth = '120px';
-    styles.optionCard.maxWidth = '98%';
-    styles.orderBtn.padding = '14px 24px';
-    styles.orderBtn.fontSize = '1rem';
-  }
 
   return (
     <div style={styles.root}>
