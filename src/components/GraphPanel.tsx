@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from "react";
+import React, { useMemo, useCallback, useState, useEffect } from "react";
 import {
   BarChart,
   Bar,
@@ -67,108 +67,121 @@ const GraphPanel: React.FC<Props> = ({ data, id = "default" }) => {
     return typeof val === "number" && val > 0 ? `${val}人` : "";
   }, []);
 
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth <= 700);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   return (
-    <div className="graph-wrapper">
-      <h2 className="box-title">時間帯別サマリーデータ</h2>
-      <ResponsiveContainer width="100%" height={300}>
-        <BarChart data={completeData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-          <XAxis 
-            dataKey="hour" 
-            tick={{ fontSize: 12, fill: '#6b7280' }}
-            axisLine={{ stroke: '#d1d5db' }}
-            tickLine={{ stroke: '#d1d5db' }}
-          />
-          <YAxis
-            allowDecimals={false}
-            tick={{ fontSize: 12, fill: '#6b7280' }}
-            axisLine={{ stroke: '#d1d5db' }}
-            tickLine={{ stroke: '#d1d5db' }}
-            label={{ 
-              value: "人", 
-              angle: -90, 
-              position: "insideLeft",
-              style: { textAnchor: 'middle', fill: '#6b7280', fontSize: 12 }
-            }}
-            domain={[0, (dataMax: number) => (dataMax === 0 ? 1 : Math.ceil(dataMax * 1.2))]}
-          />
-          <Tooltip
-            contentStyle={{
-              backgroundColor: 'white',
-              border: '1px solid #e5e7eb',
-              borderRadius: '8px',
-              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
-            }}
-            formatter={tooltipFormatter}
-            labelStyle={{ color: '#374151', fontWeight: '600' }}
-          />
-          <Legend 
-            wrapperStyle={{ paddingTop: '10px' }}
-            iconType="circle"
-          />
-          <Bar 
-            dataKey="count" 
-            fill={`url(#barGradient-${id})`}
-            name="来場者数"
-            radius={[4, 4, 0, 0]}
-          >
-            <LabelList
-              dataKey="count"
-              position="top"
-              formatter={labelFormatter}
-              style={{ fontSize: 11, fill: '#374151' }}
+    <div
+      className="graph-wrapper"
+      style={isMobile ? { overflowX: 'auto', WebkitOverflowScrolling: 'touch' } : {}}
+    >
+      <div style={isMobile ? { minWidth: 600 } : {}}>
+        <h2 className="box-title">時間帯別サマリーデータ</h2>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={completeData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+            <XAxis 
+              dataKey="hour" 
+              tick={{ fontSize: 12, fill: '#6b7280' }}
+              axisLine={{ stroke: '#d1d5db' }}
+              tickLine={{ stroke: '#d1d5db' }}
             />
-          </Bar>
-          <Line
-            type="monotone"
-            dataKey="contact"
-            stroke={`url(#contactGradient-${id})`}
-            strokeWidth={3}
-            name="接触数"
-            strokeDasharray="5 5"
-            dot={{ 
-              r: 4, 
-              fill: '#f97316',
-              stroke: 'white',
-              strokeWidth: 2
-            }}
-            activeDot={{ r: 6, stroke: '#f97316', strokeWidth: 2 }}
-            hide={isAllZero}
-          />
-          <Line
-            type="monotone"
-            dataKey="lost"
-            stroke={`url(#lostGradient-${id})`}
-            strokeWidth={3}
-            name="機会損失"
-            strokeDasharray="8 4"
-            dot={{ 
-              r: 4, 
-              fill: '#e11d48',
-              stroke: 'white',
-              strokeWidth: 2
-            }}
-            activeDot={{ r: 6, stroke: '#e11d48', strokeWidth: 2 }}
-            hide={isAllZero}
-          />
-          
-          {/* グラデーション定義 */}
-          <defs>
-            <linearGradient id={`barGradient-${id}`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#667eea" />
-              <stop offset="100%" stopColor="#764ba2" />
-            </linearGradient>
-            <linearGradient id={`contactGradient-${id}`} x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor="#f97316" />
-              <stop offset="100%" stopColor="#ea580c" />
-            </linearGradient>
-            <linearGradient id={`lostGradient-${id}`} x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor="#e11d48" />
-              <stop offset="100%" stopColor="#be123c" />
-            </linearGradient>
-          </defs>
-        </BarChart>
-      </ResponsiveContainer>
+            <YAxis
+              allowDecimals={false}
+              tick={{ fontSize: 12, fill: '#6b7280' }}
+              axisLine={{ stroke: '#d1d5db' }}
+              tickLine={{ stroke: '#d1d5db' }}
+              label={{ 
+                value: "人", 
+                angle: -90, 
+                position: "insideLeft",
+                style: { textAnchor: 'middle', fill: '#6b7280', fontSize: 12 }
+              }}
+              domain={[0, (dataMax: number) => (dataMax === 0 ? 1 : Math.ceil(dataMax * 1.2))]}
+            />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: 'white',
+                border: '1px solid #e5e7eb',
+                borderRadius: '8px',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
+              }}
+              formatter={tooltipFormatter}
+              labelStyle={{ color: '#374151', fontWeight: '600' }}
+            />
+            <Legend 
+              wrapperStyle={{ paddingTop: '10px' }}
+              iconType="circle"
+            />
+            <Bar 
+              dataKey="count" 
+              fill={`url(#barGradient-${id})`}
+              name="来場者数"
+              radius={[4, 4, 0, 0]}
+            >
+              <LabelList
+                dataKey="count"
+                position="top"
+                formatter={labelFormatter}
+                style={{ fontSize: 11, fill: '#374151' }}
+              />
+            </Bar>
+            <Line
+              type="monotone"
+              dataKey="contact"
+              stroke={`url(#contactGradient-${id})`}
+              strokeWidth={3}
+              name="接触数"
+              strokeDasharray="5 5"
+              dot={{ 
+                r: 4, 
+                fill: '#f97316',
+                stroke: 'white',
+                strokeWidth: 2
+              }}
+              activeDot={{ r: 6, stroke: '#f97316', strokeWidth: 2 }}
+              hide={isAllZero}
+            />
+            <Line
+              type="monotone"
+              dataKey="lost"
+              stroke={`url(#lostGradient-${id})`}
+              strokeWidth={3}
+              name="機会損失"
+              strokeDasharray="8 4"
+              dot={{ 
+                r: 4, 
+                fill: '#e11d48',
+                stroke: 'white',
+                strokeWidth: 2
+              }}
+              activeDot={{ r: 6, stroke: '#e11d48', strokeWidth: 2 }}
+              hide={isAllZero}
+            />
+            
+            {/* グラデーション定義 */}
+            <defs>
+              <linearGradient id={`barGradient-${id}`} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#667eea" />
+                <stop offset="100%" stopColor="#764ba2" />
+              </linearGradient>
+              <linearGradient id={`contactGradient-${id}`} x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stopColor="#f97316" />
+                <stop offset="100%" stopColor="#ea580c" />
+              </linearGradient>
+              <linearGradient id={`lostGradient-${id}`} x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stopColor="#e11d48" />
+                <stop offset="100%" stopColor="#be123c" />
+              </linearGradient>
+            </defs>
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 };
