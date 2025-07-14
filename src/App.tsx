@@ -25,7 +25,7 @@ function AppContent() {
   };
 
   useEffect(() => {
-    document.title = "BFlow";
+    document.title = "Bflowダッシュボード";
   }, []);
 
   // 認証状態の判定中は必ずローディング画面を表示
