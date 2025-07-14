@@ -1,5 +1,5 @@
 // src/App.tsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { CompanyProvider, useCompany } from './contexts/CompanyContext';
@@ -23,6 +23,10 @@ function AppContent() {
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
+
+  useEffect(() => {
+    document.title = "BFlow";
+  }, []);
 
   // 認証状態の判定中は必ずローディング画面を表示
   if (authLoading) {
