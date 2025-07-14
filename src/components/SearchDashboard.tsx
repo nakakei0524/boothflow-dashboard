@@ -9,6 +9,7 @@ import SavedSessionsModal from "./SavedSessionsModal";
 import { useAuth } from "../contexts/AuthContext";
 import { useCompany } from "../contexts/CompanyContext";
 import "../index.css";
+import MobileMenuButton from "./MobileMenuButton";
 
 interface DashboardStats {
   total_visitors: number;
@@ -43,6 +44,27 @@ const SearchDashboard: React.FC = React.memo(() => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+
+  React.useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth <= 700);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // サイドバーをモバイル時はデフォルト非表示に
+  React.useEffect(() => {
+    setSidebarOpen(!isMobile);
+  }, [isMobile]);
+
+  // モーダル表示時はサイドバーを閉じる
+  React.useEffect(() => {
+    if (isModalOpen && sidebarOpen && isMobile) {
+      setSidebarOpen(false);
+    }
+  }, [isModalOpen, isMobile, sidebarOpen]);
 
   // デバッグ用
   console.log('SearchDashboard - isModalOpen:', isModalOpen);
@@ -169,7 +191,7 @@ const SearchDashboard: React.FC = React.memo(() => {
   }), [stats]);
 
   return (
-    <div className="dashboard-container" style={{ position: 'relative' }}>
+    <div className="dashboard-container" style={{ position: 'relative', display: 'flex' }}>
       {loading && (
         <div style={{
           position: 'absolute',
@@ -186,8 +208,21 @@ const SearchDashboard: React.FC = React.memo(() => {
           </div>
         </div>
       )}
-      <Sidebar />
-      <div className="dashboard-main">
+      <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(false)} />
+      <div
+        className="dashboard-main"
+        style={{
+          marginLeft: !isMobile && sidebarOpen ? "200px" : 0,
+          transition: 'margin-left 0.2s',
+          flex: 1,
+        }}
+      >
+        {/* モバイル時のみメニューボタン表示 */}
+        {isMobile && (
+          <div style={{ position: 'fixed', top: 16, left: 16, zIndex: 120 }}>
+            <MobileMenuButton isOpen={sidebarOpen} onToggle={() => setSidebarOpen((prev) => !prev)} />
+          </div>
+        )}
         <h1 className="page-title">過去データ検索</h1>
         <Header onSearch={fetchStats} onShowSavedSessions={() => setIsModalOpen(true)} />
         {error && <p className="status-message error">{error}</p>}
@@ -197,14 +232,10 @@ const SearchDashboard: React.FC = React.memo(() => {
         <div className="box-section">
           <GraphPanel data={hourlyData} id="search" />
         </div>
+        {isModalOpen && (
+          <SavedSessionsModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSelectSession={handleSessionSelect} />
+        )}
       </div>
-
-      {/* 保存されたデータ一覧モーダル */}
-      <SavedSessionsModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSelectSession={handleSessionSelect}
-      />
     </div>
   );
 });

@@ -5,6 +5,7 @@ import Header from "./Header";
 import VisitorList from "./VisitorList";
 import GraphPanel from "./GraphPanel";
 import Sidebar from "./Sidebar";
+import MobileMenuButton from "./MobileMenuButton";
 import { useAuth } from "../contexts/AuthContext";
 import { useCompany } from "../contexts/CompanyContext";
 
@@ -32,6 +33,20 @@ const Dashboard: React.FC = () => {
   const [hourlyData, setHourlyData] = useState<HourlyData[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+
+  React.useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth <= 700);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // サイドバーをモバイル時はデフォルト非表示に
+  React.useEffect(() => {
+    setSidebarOpen(!isMobile);
+  }, [isMobile]);
 
   const fetchStats = async (
     _sessionKeyword: string,
@@ -95,21 +110,31 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <div style={{ display: "flex" }}>
-      <Sidebar />
-      <div style={{ marginLeft: "200px", padding: "20px", flex: 1 }}>
+    <div style={{ display: "flex", position: 'relative' }}>
+      <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(false)} />
+      <div
+        style={{
+          marginLeft: !isMobile && sidebarOpen ? "200px" : 0,
+          padding: "20px",
+          flex: 1,
+          transition: 'margin-left 0.2s',
+        }}
+      >
+        {/* モバイル時のみメニューボタン表示 */}
+        {isMobile && (
+          <div style={{ position: 'fixed', top: 16, left: 16, zIndex: 120 }}>
+            <MobileMenuButton isOpen={sidebarOpen} onToggle={() => setSidebarOpen((prev) => !prev)} />
+          </div>
+        )}
         <Header onSearch={fetchStats} />
-
         <main className="main-content">
           {loading && <p className="text-center">読み込み中...</p>}
           {error && <p className="text-center text-red-500">{error}</p>}
-
           {stats && (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <VisitorList stats={stats} />
             </div>
           )}
-
           {hourlyData.length > 0 && (
             <div className="grid grid-cols-1">
               <GraphPanel data={hourlyData} />

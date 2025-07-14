@@ -19,6 +19,60 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle }) => {
   const { user, logout } = useAuth();
   const { currentCompany } = useCompany();
 
+  // レスポンシブ判定
+  const [isMobile, setIsMobile] = React.useState(false);
+  React.useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth <= 700);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // サイドバー本体のスタイル
+  const sidebarStyle: React.CSSProperties = isMobile
+    ? {
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        height: '100vh',
+        width: 220,
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        boxShadow: '2px 0 16px #0002',
+        zIndex: 200,
+        transform: isOpen ? 'translateX(0)' : 'translateX(-100%)',
+        transition: 'transform 0.2s',
+        display: 'flex',
+        flexDirection: 'column',
+      }
+    : {
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        height: '100vh',
+        width: 200,
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        boxShadow: '2px 0 16px #0002',
+        zIndex: 100,
+        display: 'flex',
+        flexDirection: 'column',
+      };
+
+  // オーバーレイ
+  const overlay = isMobile && isOpen ? (
+    <div
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100vw',
+        height: '100vh',
+        background: 'rgba(0,0,0,0.25)',
+        zIndex: 150,
+      }}
+      onClick={onToggle}
+    />
+  ) : null;
+
   const handleNavClick = (path: string) => {
     navigate(path);
     // モバイルでメニューを閉じる
@@ -37,95 +91,98 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle }) => {
   };
 
   return (
-    <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
-      <div className="sidebar-logo">
-        <img src={logo} alt="Bflow Logo" className="sidebar-logo-img" />
-      </div>
-      <nav className="sidebar-nav">
-        <ul>
-          <li
-            className={`nav-item ${location.pathname === "/" || location.pathname === "/home" ? "active" : ""}`}
-            onClick={() => handleNavClick("/")}
-          >
-            ホーム
-          </li>
-
-          {/* 会社設定に基づいてメニューを表示 */}
-          {currentCompany?.features.realtimeDashboard && (
-            <li
-              className={`nav-item ${location.pathname === "/realtime" ? "active" : ""}`}
-              onClick={() => handleNavClick("/realtime")}
-            >
-              ダッシュボード
-            </li>
-          )}
-
-          {currentCompany?.features.searchDashboard && (
-            <li
-              className={`nav-item ${location.pathname === "/search" ? "active" : ""}`}
-              onClick={() => handleNavClick("/search")}
-            >
-              過去データ検索
-            </li>
-          )}
-
-          {currentCompany?.features.customReports && (
-            <li className="nav-item">
-              カスタムレポート
-            </li>
-          )}
-
-          <li className="nav-item" onClick={() => handleNavClick("/plan-option")}>プラン・オプション</li>
-          <li className="nav-item" onClick={() => handleNavClick("/support")}>サポート</li>
-        </ul>
-      </nav>
-      
-      {/* ユーザー情報とログアウト */}
-      <div className="sidebar-user" style={{
-        background: 'none',
-        borderRadius: 0,
-        boxShadow: 'none',
-        margin: '18px 0 0 0',
-        padding: '18px 18px 12px 18px',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'flex-start',
-        border: 'none',
-      }}>
-        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', width: '100%' }}>
-          <img src={avatar} alt="avatar" style={{ width: 54, height: 54, borderRadius: '50%', objectFit: 'cover', marginRight: 16, boxShadow: '0 2px 8px rgba(102,126,234,0.10)' }} />
-          <div className="user-info" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', flex: 1 }}>
-            <div style={{
-              fontSize: '1.08rem',
-              fontWeight: 700,
-              color: '#fff',
-              marginBottom: 6,
-              letterSpacing: '0.01em',
-              lineHeight: 1.3,
-              textShadow: '0 1px 4px rgba(102,126,234,0.10)'
-            }}>{user?.companyName || 'Company Name'}</div>
-            <div style={{
-              fontSize: '0.98rem',
-              color: '#e0e7ef',
-              fontWeight: 500,
-              marginBottom: 2,
-              lineHeight: 1.2,
-            }}>{user?.attributes?.name || user?.attributes?.["custom:name"] || 'User Name'}</div>
-            <div style={{
-              fontSize: '0.97rem',
-              color: '#cbd5e1',
-              fontWeight: 400,
-              marginBottom: 2,
-              lineHeight: 1.2,
-              wordBreak: 'break-all',
-            }}>{user?.email}</div>
-          </div>
+    <>
+      {overlay}
+      <aside className={`sidebar${isOpen ? ' open' : ''}`} style={sidebarStyle}>
+        <div className="sidebar-logo">
+          <img src={logo} alt="Bflow Logo" className="sidebar-logo-img" />
         </div>
-        <button onClick={handleLogout} className="logout-button" style={{ marginTop: 16, width: '100%' }}>
-          ログアウト
-        </button>
-      </div>
-    </aside>
+        <nav className="sidebar-nav">
+          <ul>
+            <li
+              className={`nav-item ${location.pathname === "/" || location.pathname === "/home" ? "active" : ""}`}
+              onClick={() => handleNavClick("/")}
+            >
+              ホーム
+            </li>
+
+            {/* 会社設定に基づいてメニューを表示 */}
+            {currentCompany?.features.realtimeDashboard && (
+              <li
+                className={`nav-item ${location.pathname === "/realtime" ? "active" : ""}`}
+                onClick={() => handleNavClick("/realtime")}
+              >
+                ダッシュボード
+              </li>
+            )}
+
+            {currentCompany?.features.searchDashboard && (
+              <li
+                className={`nav-item ${location.pathname === "/search" ? "active" : ""}`}
+                onClick={() => handleNavClick("/search")}
+              >
+                過去データ検索
+              </li>
+            )}
+
+            {currentCompany?.features.customReports && (
+              <li className="nav-item">
+                カスタムレポート
+              </li>
+            )}
+
+            <li className="nav-item" onClick={() => handleNavClick("/plan-option")}>プラン・オプション</li>
+            <li className="nav-item" onClick={() => handleNavClick("/support")}>サポート</li>
+          </ul>
+        </nav>
+        
+        {/* ユーザー情報とログアウト */}
+        <div className="sidebar-user" style={{
+          background: 'none',
+          borderRadius: 0,
+          boxShadow: 'none',
+          margin: '18px 0 0 0',
+          padding: '18px 18px 12px 18px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'flex-start',
+          border: 'none',
+        }}>
+          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', width: '100%' }}>
+            <img src={avatar} alt="avatar" style={{ width: 54, height: 54, borderRadius: '50%', objectFit: 'cover', marginRight: 16, boxShadow: '0 2px 8px rgba(102,126,234,0.10)' }} />
+            <div className="user-info" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', flex: 1 }}>
+              <div style={{
+                fontSize: '1.08rem',
+                fontWeight: 700,
+                color: '#fff',
+                marginBottom: 6,
+                letterSpacing: '0.01em',
+                lineHeight: 1.3,
+                textShadow: '0 1px 4px rgba(102,126,234,0.10)'
+              }}>{user?.companyName || 'Company Name'}</div>
+              <div style={{
+                fontSize: '0.98rem',
+                color: '#e0e7ef',
+                fontWeight: 500,
+                marginBottom: 2,
+                lineHeight: 1.2,
+              }}>{user?.attributes?.name || user?.attributes?.["custom:name"] || 'User Name'}</div>
+              <div style={{
+                fontSize: '0.97rem',
+                color: '#cbd5e1',
+                fontWeight: 400,
+                marginBottom: 2,
+                lineHeight: 1.2,
+                wordBreak: 'break-all',
+              }}>{user?.email}</div>
+            </div>
+          </div>
+          <button onClick={handleLogout} className="logout-button" style={{ marginTop: 16, width: '100%' }}>
+            ログアウト
+          </button>
+        </div>
+      </aside>
+    </>
   );
 };
 
