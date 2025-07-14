@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import "../index.css";
 import axios from "axios";
+import { useNavigate } from 'react-router-dom';
 
 interface NotionNewsItem {
   title: string;
@@ -10,6 +11,7 @@ interface NotionNewsItem {
 
 const Home: React.FC = () => {
   const [newsList, setNewsList] = useState<NotionNewsItem[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchNews = async () => {
@@ -36,14 +38,12 @@ const Home: React.FC = () => {
               BoothFlowは月額制ではなく、その都度ご利用いただけるサービスです。
               次回の展示会対応をご希望の方は、以下より発注フォームへお進みください。
             </p>
-              <a
-                href="https://docs.google.com/forms/d/e/1FAIpQLSfSBlPnYSh6PdgVOhtbKK3ALfBXCVwzpmyASJkgCq4hfioUuA/viewform?usp=dialog"
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
                 className="manual-button"
+                onClick={() => navigate('/plan-option')}
               >
-                発注フォームはこちら
-              </a>
+                プラン・オプションを見る
+              </button>
             </div>
           </div>
 

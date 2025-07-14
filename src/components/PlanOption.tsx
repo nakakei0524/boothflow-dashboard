@@ -65,7 +65,9 @@ const PlanOption: React.FC = () => {
                 <div className="option-header">
                   <h3 className="option-name">Slack通知連携</h3>
                   <span className="option-price">¥10,000</span>
+                  <span className="coming-soon-label">Coming Soon</span>
                 </div>
+                <p className="option-description">今後公開予定の機能です</p>
               </div>
               <div className="option-card">
                 <div className="option-header">
@@ -78,22 +80,10 @@ const PlanOption: React.FC = () => {
           </div>
 
           {/* お問い合わせセクション */}
-          <div className="contact-section">
-            <h2 className="section-title">お問い合わせ</h2>
-            <div className="contact-card">
-              <p className="contact-description">
-                プランの変更やオプション機能の追加についてご質問がございましたら、
-                お気軽にお問い合わせください。
-              </p>
-              <div className="contact-buttons">
-                <button className="contact-button primary">
-                  お問い合わせ
-                </button>
-                <button className="contact-button secondary">
-                  資料請求
-                </button>
-              </div>
-            </div>
+          <div className="order-section" style={{ textAlign: 'center', margin: '32px 0' }}>
+            <button className="order-button" style={{ padding: '12px 32px', fontSize: '1.2rem', background: '#764ba2', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>
+              発注
+            </button>
           </div>
         </div>
       </div>
