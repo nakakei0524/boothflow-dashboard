@@ -46,8 +46,8 @@ const PlanOption: React.FC = () => {
             </ul>
           </div>
           {/* ベーシックプラン */}
-          <div style={{ background: '#fff', borderRadius: 20, boxShadow: '0 6px 32px #bdbdbd22', padding: 48, minWidth: 320, maxWidth: 400, flex: 1, margin: '0 12px', border: '2.5px solid #764ba2', position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <div style={{ position: 'absolute', top: -24, left: '50%', transform: 'translateX(-50%)', background: '#764ba2', color: '#fff', borderRadius: 14, padding: '6px 24px', fontSize: 16, fontWeight: 600, letterSpacing: 1, boxShadow: '0 2px 8px #bdbdbd33' }}>おすすめ</div>
+          <div style={{ background: '#fff', borderRadius: 20, boxShadow: '0 6px 32px #bdbdbd22', padding: 48, minWidth: 320, maxWidth: 400, flex: 1, margin: '0 12px', border: '2.5px solid #764ba2', position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: 72 }}>
+            <div style={{ position: 'absolute', top: 12, left: '50%', transform: 'translateX(-50%)', background: '#764ba2', color: '#fff', borderRadius: 14, padding: '6px 24px', fontSize: 16, fontWeight: 600, letterSpacing: 1, boxShadow: '0 2px 8px #bdbdbd33', zIndex: 2 }}>おすすめ</div>
             <h2 style={{ fontSize: '1.6rem', fontWeight: 600, color: '#764ba2', marginBottom: 16, marginTop: 18 }}>ベーシックプラン</h2>
             <div style={{ fontSize: '2.3rem', fontWeight: 700, color: '#333', marginBottom: 16 }}>¥60,000<span style={{ fontSize: '1.1rem', color: '#888' }}>（税別）</span></div>
             <ul style={{ textAlign: 'left', color: '#444', margin: '24px 0 0 0', padding: 0, listStyle: 'none', fontSize: '1.1rem', lineHeight: 2 }}>
