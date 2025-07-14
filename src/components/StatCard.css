@@ -1,0 +1,60 @@
+.stat-card {
+  background: #fff;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  width: 180px;
+}
+
+.stat-title {
+  font-weight: bold;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.stat-value {
+  font-size: 28px;
+  font-weight: bold;
+  margin-top: 4px;
+}
+
+.stat-unit {
+  font-size: 14px;
+  margin-left: 4px;
+}
+
+/* ツールチップ周り */
+.tooltip-container {
+  position: relative;
+  background: #ccc;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  text-align: center;
+  line-height: 16px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.tooltip-text {
+  visibility: hidden;
+  width: 200px;
+  background-color: #333;
+  color: #fff;
+  text-align: left;
+  border-radius: 6px;
+  padding: 8px;
+  position: absolute;
+  z-index: 10;
+  top: 20px;
+  left: 0;
+  font-size: 12px;
+  white-space: normal;
+}
+
+.tooltip-container:hover .tooltip-text {
+  visibility: visible;
+}
