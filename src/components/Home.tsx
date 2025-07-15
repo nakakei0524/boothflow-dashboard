@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import "../index.css";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
+import MobileNavBar from "./MobileNavBar";
 
 interface NotionNewsItem {
   title: string;
@@ -91,6 +92,7 @@ const Home: React.FC = () => {
             )}
           </ul>
       </div>
+      <MobileNavBar />
     </div>
   );
 };

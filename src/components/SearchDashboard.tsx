@@ -10,6 +10,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { useCompany } from "../contexts/CompanyContext";
 import "../index.css";
 import MobileMenuButton from "./MobileMenuButton";
+import MobileNavBar from "./MobileNavBar";
 
 interface DashboardStats {
   total_visitors: number;
@@ -236,6 +237,7 @@ const SearchDashboard: React.FC = React.memo(() => {
           <SavedSessionsModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSelectSession={handleSessionSelect} />
         )}
       </div>
+      <MobileNavBar />
     </div>
   );
 });
