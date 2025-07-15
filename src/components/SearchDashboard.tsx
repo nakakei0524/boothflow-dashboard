@@ -11,6 +11,7 @@ import { useCompany } from "../contexts/CompanyContext";
 import "../index.css";
 import MobileMenuButton from "./MobileMenuButton";
 import MobileNavBar from "./MobileNavBar";
+import MobileLayout from "./MobileLayout";
 
 interface DashboardStats {
   total_visitors: number;
@@ -191,6 +192,66 @@ const SearchDashboard: React.FC = React.memo(() => {
     avg_stay_time: stats.average_duration / 60,
   }), [stats]);
 
+  // スマホ専用デザイン
+  if (isMobile) {
+    return (
+      <MobileLayout title="過去データ検索">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          {/* 検索フォーム */}
+          <div style={{ background: '#fff', borderRadius: 12, padding: 16, boxShadow: '0 2px 8px #bdbdbd22' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <label style={{ fontWeight: 600, fontSize: 15 }}>会期名</label>
+              <input
+                type="text"
+                placeholder="キーワード"
+                style={{ fontSize: 16, padding: 10, borderRadius: 6, border: '1px solid #ccc', marginBottom: 8 }}
+                value={''}
+                onChange={() => {}}
+                readOnly
+                // 本来はHeaderのstateと連携するが、ここではダミー
+              />
+              <label style={{ fontWeight: 600, fontSize: 15 }}>日付</label>
+              <input
+                type="date"
+                style={{ fontSize: 16, padding: 10, borderRadius: 6, border: '1px solid #ccc', marginBottom: 8 }}
+                value={''}
+                onChange={() => {}}
+                readOnly
+              />
+              <button
+                style={{ width: '100%', background: 'linear-gradient(90deg, #764ba2 0%, #667eea 100%)', color: '#fff', fontWeight: 700, fontSize: 16, border: 'none', borderRadius: 8, padding: '12px 0', marginTop: 8 }}
+                onClick={() => {}}
+                disabled
+              >
+                検索（スマホUI例）
+              </button>
+              <button
+                style={{ width: '100%', background: '#28a745', color: '#fff', fontWeight: 700, fontSize: 16, border: 'none', borderRadius: 8, padding: '12px 0', marginTop: 8 }}
+                onClick={() => setIsModalOpen(true)}
+              >
+                📋 保存データ一覧
+              </button>
+            </div>
+          </div>
+          {/* サマリーカード */}
+          <div style={{ background: '#fff', borderRadius: 12, padding: 12, boxShadow: '0 2px 8px #bdbdbd22' }}>
+            <SummaryCards data={memoizedStats} />
+          </div>
+          {/* グラフ */}
+          <div style={{ background: '#fff', borderRadius: 12, padding: 12, boxShadow: '0 2px 8px #bdbdbd22' }}>
+            <GraphPanel data={hourlyData} id="search-mobile" />
+          </div>
+          {/* エラー表示 */}
+          {error && <p style={{ color: '#e11d48', fontWeight: 600, textAlign: 'center', margin: 0 }}>{error}</p>}
+        </div>
+        {isModalOpen && (
+          <SavedSessionsModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSelectSession={handleSessionSelect} />
+        )}
+      </MobileLayout>
+    );
+  }
+
+  // PC用デザイン（従来通り）
   return (
     <div className="dashboard-container" style={{ position: 'relative', display: 'flex' }}>
       {loading && (
