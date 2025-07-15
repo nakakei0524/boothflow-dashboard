@@ -11,6 +11,7 @@ import SearchDashboard from './components/SearchDashboard';
 import Home from './components/Home';
 import RealtimeDashboard from './components/RealtimeDashboard';
 import PlanOption from './components/PlanOption';
+import AdminSettings from './components/AdminSettings';
 
 // 追加: 空ページ
 const SupportPage = () => <div className="dashboard-main"><h1 className="page-title">サポート</h1></div>;
@@ -96,26 +97,14 @@ function AppContent() {
       <div className="main-content">
         <div className="dashboard-container">
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/home" element={<Home />} />
-            <Route 
-              path="/search" 
-              element={
-                <FeatureRoute feature="searchDashboard">
-                  <SearchDashboard />
-                </FeatureRoute>
-              } 
-            />
-            <Route 
-              path="/realtime" 
-              element={
-                <FeatureRoute feature="realtimeDashboard">
-                  <RealtimeDashboard />
-                </FeatureRoute>
-              } 
-            />
+            {/* 既存ルート */}
+            <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+            <Route path="/realtime" element={<ProtectedRoute><RealtimeDashboard /></ProtectedRoute>} />
+            <Route path="/search" element={<ProtectedRoute><SearchDashboard /></ProtectedRoute>} />
+            <Route path="/plan-option" element={<ProtectedRoute><PlanOption /></ProtectedRoute>} />
+            {/* 管理者設定ルート追加 */}
+            <Route path="/admin-settings" element={<ProtectedRoute><AdminSettings /></ProtectedRoute>} />
             {/* 追加: プラン・オプション、サポート */}
-            <Route path="/plan-option" element={<PlanOption />} />
             <Route path="/support" element={<SupportPage />} />
           </Routes>
         </div>

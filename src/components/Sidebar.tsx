@@ -105,34 +105,38 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle }) => {
             >
               ホーム
             </li>
-
-            {/* 会社設定に基づいてメニューを表示 */}
-            {currentCompany?.features.realtimeDashboard && (
+            {(!isMobile && currentCompany?.features.realtimeDashboard) || isMobile ? (
               <li
                 className={`nav-item ${location.pathname === "/realtime" ? "active" : ""}`}
                 onClick={() => handleNavClick("/realtime")}
               >
-                ダッシュボード
+                リアルタイムダッシュボード
               </li>
-            )}
-
-            {currentCompany?.features.searchDashboard && (
+            ) : null}
+            {(!isMobile && currentCompany?.features.searchDashboard) || isMobile ? (
               <li
                 className={`nav-item ${location.pathname === "/search" ? "active" : ""}`}
                 onClick={() => handleNavClick("/search")}
               >
                 過去データ検索
               </li>
+            ) : null}
+            {/* スマホ時は他メニュー非表示 */}
+            {!isMobile && currentCompany?.features.customReports && (
+              <li className="nav-item">カスタムレポート</li>
             )}
-
-            {currentCompany?.features.customReports && (
-              <li className="nav-item">
-                カスタムレポート
-              </li>
+            {!isMobile && (
+              <>
+                <li className="nav-item" onClick={() => handleNavClick("/plan-option")}>プラン・オプション</li>
+                <li className="nav-item" onClick={() => handleNavClick("/support")}>サポート</li>
+                <li className={`nav-item ${location.pathname === "/admin-settings" ? "active" : ""}`}
+                  onClick={() => handleNavClick("/admin-settings")}
+                  style={{ color: '#ffd700', fontWeight: 700 }}
+                >
+                  管理者設定
+                </li>
+              </>
             )}
-
-            <li className="nav-item" onClick={() => handleNavClick("/plan-option")}>プラン・オプション</li>
-            <li className="nav-item" onClick={() => handleNavClick("/support")}>サポート</li>
           </ul>
         </nav>
         
