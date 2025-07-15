@@ -50,6 +50,32 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     checkAuthState();
   }, []);
 
+  // セッションタイムアウト（30分）
+  useEffect(() => {
+    if (!user) return;
+    let timeoutId: NodeJS.Timeout;
+    let lastActivity = Date.now();
+    const TIMEOUT_MINUTES = 30;
+    const resetTimer = () => {
+      lastActivity = Date.now();
+      if (timeoutId) clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        if (Date.now() - lastActivity >= TIMEOUT_MINUTES * 60 * 1000) {
+          logout();
+          alert('30分間操作がなかったため自動的にログアウトしました。再度ログインしてください。');
+        }
+      }, TIMEOUT_MINUTES * 60 * 1000);
+    };
+    // 各種ユーザー操作イベントでタイマーリセット
+    const events = ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll'];
+    events.forEach(event => window.addEventListener(event, resetTimer));
+    resetTimer();
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+      events.forEach(event => window.removeEventListener(event, resetTimer));
+    };
+  }, [user]);
+
   const checkAuthState = async () => {
     try {
       setIsLoading(true);
