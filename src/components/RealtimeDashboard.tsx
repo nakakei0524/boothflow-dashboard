@@ -139,12 +139,20 @@ const RealtimeDashboard: React.FC = () => {
   };
 
   // 計測開始処理
-  const handleStartMeasurement = () => {
+  const handleStartMeasurement = async () => {
     if (!sessionId || !baseDate) {
       alert("会期名と日付を入力してください");
       return;
     }
-    alert('計測開始');
+    try {
+      const response = await fetch('http://192.168.0.123:5000/start-measurement', {
+        method: 'POST',
+      });
+      const data = await response.json();
+      alert(data.message); // 「命令を受信しました」と表示されればOK
+    } catch (error) {
+      alert('ラズパイに命令を送信できませんでした');
+    }
   };
 
   // 計測終了処理
