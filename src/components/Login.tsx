@@ -289,9 +289,7 @@ const Login: React.FC = () => {
         )}
         
         <div style={{ marginTop: '16px', textAlign: 'center' }}>
-          <p style={{ fontSize: '13px', color: '#94a3b8' }}>
-            AWS Cognitoを使用した安全な認証システム
-          </p>
+          {/* AWS認証に関する説明文を削除 */}
           {/* デバッグ情報 */}
           <div style={{ marginTop: '8px', fontSize: '11px', color: '#cbd5e1' }}>
             User Pool: ap-northeast-1_gOiAtMjfB
