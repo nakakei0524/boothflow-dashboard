@@ -146,16 +146,13 @@ const Login: React.FC = () => {
         border: '1px solid #e3e8f0',
       }} onSubmit={showNewPassword ? handleNewPassword : handleSubmit}>
         <img src={BflowLogo} alt="Bflow Logo" style={{
-          width: 160,
+          width: 220,
           marginBottom: 32,
           marginTop: 8,
           display: 'block',
           marginLeft: 'auto',
           marginRight: 'auto',
-          boxShadow: '0 4px 16px rgba(37,99,235,0.08)',
           borderRadius: '12px',
-          background: '#f8fafc',
-          padding: 12,
         }} />
         
         {showNewPassword ? (
