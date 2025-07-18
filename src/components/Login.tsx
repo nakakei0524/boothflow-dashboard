@@ -145,7 +145,18 @@ const Login: React.FC = () => {
         zIndex: 1,
         border: '1px solid #e3e8f0',
       }} onSubmit={showNewPassword ? handleNewPassword : handleSubmit}>
-        <img src={BflowLogo} alt="Bflow Logo" style={{ width: 180, marginBottom: 32 }} />
+        <img src={BflowLogo} alt="Bflow Logo" style={{
+          width: 160,
+          marginBottom: 32,
+          marginTop: 8,
+          display: 'block',
+          marginLeft: 'auto',
+          marginRight: 'auto',
+          boxShadow: '0 4px 16px rgba(37,99,235,0.08)',
+          borderRadius: '12px',
+          background: '#f8fafc',
+          padding: 12,
+        }} />
         
         {showNewPassword ? (
           <>
@@ -269,31 +280,10 @@ const Login: React.FC = () => {
           }
         </button>
         
-        {/* 切り替えボタン */}
-        {!showNewPassword && (
-          <button
-            type="button"
-            onClick={() => setShowNewPassword(true)}
-            style={{
-              background: 'none',
-              border: 'none',
-              color: '#2563eb',
-              fontSize: '14px',
-              cursor: 'pointer',
-              textDecoration: 'underline',
-              marginTop: '8px'
-            }}
-          >
-            パスワードを変更する
-          </button>
-        )}
+        {/* 切り替えボタン・パスワード再設定UIを削除 */}
         
         <div style={{ marginTop: '16px', textAlign: 'center' }}>
-          {/* AWS認証に関する説明文を削除 */}
-          {/* デバッグ情報 */}
-          <div style={{ marginTop: '8px', fontSize: '11px', color: '#cbd5e1' }}>
-            User Pool: ap-northeast-1_gOiAtMjfB
-          </div>
+          {/* デバッグ情報（User Pool ID）も削除 */}
         </div>
       </form>
     </div>
