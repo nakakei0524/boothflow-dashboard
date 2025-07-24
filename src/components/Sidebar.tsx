@@ -125,6 +125,27 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle }) => {
             {!isMobile && currentCompany?.features.customReports && (
               <li className="nav-item">カスタムレポート</li>
             )}
+            {/* 展示会ROI計算メニュー */}
+            <li
+              className={`nav-item${location.pathname === "/expo-roi" ? " active" : ""}`}
+              onClick={
+                currentCompany?.companyId === 'memori.inc'
+                  ? () => alert('近日公開予定（本実装時に画面遷移）')
+                  : undefined
+              }
+              style={{
+                color: currentCompany?.companyId === 'memori.inc' ? '#fff' : '#bbb',
+                cursor: currentCompany?.companyId === 'memori.inc' ? 'pointer' : 'not-allowed',
+                position: 'relative',
+                opacity: currentCompany?.companyId === 'memori.inc' ? 1 : 0.7,
+              }}
+              title={currentCompany?.companyId === 'memori.inc' ? '' : '近日公開予定'}
+            >
+              展示会ROI計算
+              {currentCompany?.companyId !== 'memori.inc' && (
+                <span style={{ position: 'absolute', top: 2, right: 8, fontSize: 11, color: '#fff', background: '#aaa', borderRadius: 8, padding: '1px 6px' }}>近日公開予定</span>
+              )}
+            </li>
             {!isMobile && (
               <>
                 <li className="nav-item" onClick={() => handleNavClick("/plan-option")}>プラン・オプション</li>

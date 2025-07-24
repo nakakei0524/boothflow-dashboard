@@ -92,28 +92,6 @@ const Home: React.FC = () => {
               )}
             </ul>
           </div>
-          {/* 展示会ROI計算カード */}
-          <div
-            style={{
-              background: companyId === 'memori.inc' ? 'linear-gradient(90deg, #764ba2 0%, #667eea 100%)' : '#eee',
-              borderRadius: 12,
-              padding: 20,
-              color: companyId === 'memori.inc' ? '#fff' : '#aaa',
-              textAlign: 'center',
-              marginBottom: 8,
-              cursor: companyId === 'memori.inc' ? 'pointer' : 'not-allowed',
-              position: 'relative',
-              opacity: companyId === 'memori.inc' ? 1 : 0.7,
-            }}
-            onClick={companyId === 'memori.inc' ? () => {/* TODO: ROI画面遷移 */} : undefined}
-            title={companyId === 'memori.inc' ? '' : '近日公開予定'}
-          >
-            <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 4 }}>展示会ROI計算</h2>
-            <p style={{ fontSize: 14 }}>{companyId === 'memori.inc' ? 'ROIを計算できます' : 'Coming Soon...'}</p>
-            {companyId !== 'memori.inc' && (
-              <span style={{ position: 'absolute', top: 8, right: 16, fontSize: 12, color: '#fff', background: '#aaa', borderRadius: 8, padding: '2px 8px' }}>近日公開予定</span>
-            )}
-          </div>
         </div>
       </MobileLayout>
     );
@@ -123,31 +101,6 @@ const Home: React.FC = () => {
   return (
     <div className="dashboard-main">
       <h1 className="page-title">ホーム</h1>
-      {/* 展示会ROI計算カード */}
-      <div
-        style={{
-          background: companyId === 'memori.inc' ? 'linear-gradient(90deg, #764ba2 0%, #667eea 100%)' : '#eee',
-          borderRadius: 12,
-          padding: 24,
-          color: companyId === 'memori.inc' ? '#fff' : '#aaa',
-          textAlign: 'center',
-          marginBottom: 24,
-          cursor: companyId === 'memori.inc' ? 'pointer' : 'not-allowed',
-          position: 'relative',
-          maxWidth: 400,
-          marginLeft: 'auto',
-          marginRight: 'auto',
-          opacity: companyId === 'memori.inc' ? 1 : 0.7,
-        }}
-        onClick={companyId === 'memori.inc' ? () => {/* TODO: ROI画面遷移 */} : undefined}
-        title={companyId === 'memori.inc' ? '' : '近日公開予定'}
-      >
-        <h2 style={{ fontSize: 22, fontWeight: 700, marginBottom: 8 }}>展示会ROI計算</h2>
-        <p style={{ fontSize: 16 }}>{companyId === 'memori.inc' ? 'ROIを計算できます' : 'Coming Soon...'}</p>
-        {companyId !== 'memori.inc' && (
-          <span style={{ position: 'absolute', top: 12, right: 24, fontSize: 13, color: '#fff', background: '#aaa', borderRadius: 8, padding: '2px 10px' }}>近日公開予定</span>
-        )}
-      </div>
       <div className="home-section-grid">
         <div className="home-section">
           <div className="home-section-content">
