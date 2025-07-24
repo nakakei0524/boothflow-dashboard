@@ -5,6 +5,7 @@ import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import MobileNavBar from "./MobileNavBar";
 import MobileLayout from "./MobileLayout";
+import { useCompany } from "../contexts/CompanyContext";
 
 interface NotionNewsItem {
   title: string;
@@ -15,6 +16,8 @@ const Home: React.FC = () => {
   const [newsList, setNewsList] = useState<NotionNewsItem[]>([]);
   const navigate = useNavigate();
   const [isMobile, setIsMobile] = useState(false);
+  const { currentCompany } = useCompany();
+  const companyId = currentCompany?.companyId;
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth <= 700);
@@ -37,7 +40,7 @@ const Home: React.FC = () => {
 
   // スマホ専用デザイン
   if (isMobile) {
-    return (
+  return (
       <MobileLayout title="ホーム">
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           {/* 発注フォーム案内 */}
@@ -61,13 +64,13 @@ const Home: React.FC = () => {
             </p>
             <a
               href="https://www.notion.so/229c750ed0598094837fd87e2e246f08?source=copy_link"
-              target="_blank"
-              rel="noopener noreferrer"
+                target="_blank"
+                rel="noopener noreferrer"
               style={{ display: 'block', width: '100%', background: '#fff', color: '#764ba2', fontWeight: 700, fontSize: 16, border: '1px solid #764ba2', borderRadius: 8, padding: '12px 0', textAlign: 'center', textDecoration: 'none', marginTop: 8 }}
-            >
+              >
               マニュアルを見る
-            </a>
-          </div>
+              </a>
+            </div>
           {/* Coming Soon */}
           <div style={{ background: 'linear-gradient(90deg, #764ba2 0%, #667eea 100%)', borderRadius: 12, padding: 20, color: '#fff', textAlign: 'center', marginBottom: 8 }}>
             <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 4 }}>Coming Soon...</h2>
@@ -89,6 +92,28 @@ const Home: React.FC = () => {
               )}
             </ul>
           </div>
+          {/* 展示会ROI計算カード */}
+          <div
+            style={{
+              background: companyId === 'memori.inc' ? 'linear-gradient(90deg, #764ba2 0%, #667eea 100%)' : '#eee',
+              borderRadius: 12,
+              padding: 20,
+              color: companyId === 'memori.inc' ? '#fff' : '#aaa',
+              textAlign: 'center',
+              marginBottom: 8,
+              cursor: companyId === 'memori.inc' ? 'pointer' : 'not-allowed',
+              position: 'relative',
+              opacity: companyId === 'memori.inc' ? 1 : 0.7,
+            }}
+            onClick={companyId === 'memori.inc' ? () => {/* TODO: ROI画面遷移 */} : undefined}
+            title={companyId === 'memori.inc' ? '' : '近日公開予定'}
+          >
+            <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 4 }}>展示会ROI計算</h2>
+            <p style={{ fontSize: 14 }}>{companyId === 'memori.inc' ? 'ROIを計算できます' : 'Coming Soon...'}</p>
+            {companyId !== 'memori.inc' && (
+              <span style={{ position: 'absolute', top: 8, right: 16, fontSize: 12, color: '#fff', background: '#aaa', borderRadius: 8, padding: '2px 8px' }}>近日公開予定</span>
+            )}
+          </div>
         </div>
       </MobileLayout>
     );
@@ -98,6 +123,31 @@ const Home: React.FC = () => {
   return (
     <div className="dashboard-main">
       <h1 className="page-title">ホーム</h1>
+      {/* 展示会ROI計算カード */}
+      <div
+        style={{
+          background: companyId === 'memori.inc' ? 'linear-gradient(90deg, #764ba2 0%, #667eea 100%)' : '#eee',
+          borderRadius: 12,
+          padding: 24,
+          color: companyId === 'memori.inc' ? '#fff' : '#aaa',
+          textAlign: 'center',
+          marginBottom: 24,
+          cursor: companyId === 'memori.inc' ? 'pointer' : 'not-allowed',
+          position: 'relative',
+          maxWidth: 400,
+          marginLeft: 'auto',
+          marginRight: 'auto',
+          opacity: companyId === 'memori.inc' ? 1 : 0.7,
+        }}
+        onClick={companyId === 'memori.inc' ? () => {/* TODO: ROI画面遷移 */} : undefined}
+        title={companyId === 'memori.inc' ? '' : '近日公開予定'}
+      >
+        <h2 style={{ fontSize: 22, fontWeight: 700, marginBottom: 8 }}>展示会ROI計算</h2>
+        <p style={{ fontSize: 16 }}>{companyId === 'memori.inc' ? 'ROIを計算できます' : 'Coming Soon...'}</p>
+        {companyId !== 'memori.inc' && (
+          <span style={{ position: 'absolute', top: 12, right: 24, fontSize: 13, color: '#fff', background: '#aaa', borderRadius: 8, padding: '2px 10px' }}>近日公開予定</span>
+        )}
+      </div>
       <div className="home-section-grid">
         <div className="home-section">
           <div className="home-section-content">
@@ -120,17 +170,17 @@ const Home: React.FC = () => {
             <p className="home-description">
               BoothFlowの操作にご不明な点がある場合は、以下よりマニュアルをご確認ください。
             </p>
-            <a
-              href="https://www.notion.so/229c750ed0598094837fd87e2e246f08?source=copy_link"
-              target="_blank"
-              rel="noopener noreferrer"
+              <a
+                href="https://www.notion.so/229c750ed0598094837fd87e2e246f08?source=copy_link"
+                target="_blank"
+                rel="noopener noreferrer"
               className="manual-button manual-button-secondary"
-            >
-              マニュアルを見る
-            </a>
+              >
+                マニュアルを見る
+              </a>
+            </div>
           </div>
         </div>
-      </div>
       <div className="home-section coming-soon-section">
         <div className="coming-soon-overlay"></div>
         <div className="coming-soon-content">
@@ -138,20 +188,20 @@ const Home: React.FC = () => {
           <p>新しい機能を準備中です</p>
         </div>
       </div>
-      <div className="home-section">
-        <h2 className="home-subtitle">Bflowからのお知らせ</h2>
-        <ul className="home-list">
-          {newsList.length > 0 ? (
-            newsList.map((item, idx) => (
+        <div className="home-section">
+          <h2 className="home-subtitle">Bflowからのお知らせ</h2>
+          <ul className="home-list">
+            {newsList.length > 0 ? (
+              newsList.map((item, idx) => (
               <li key={idx}>
                 <span className="news-title">{item.title}</span>
                 <span className="news-date">{item.date}</span>
               </li>
-            ))
-          ) : (
+              ))
+            ) : (
             <li className="no-news">現在お知らせはありません</li>
-          )}
-        </ul>
+            )}
+          </ul>
       </div>
       <MobileNavBar />
     </div>
