@@ -2,6 +2,8 @@
 import React, { useState, useRef } from "react";
 import { createPortal } from "react-dom";
 import "../index.css"; // CSSも読み込んでおく
+import { useCompany } from "../contexts/CompanyContext";
+import { useAuth } from "../contexts/AuthContext";
 
 interface Props {
   data: {
@@ -44,6 +46,21 @@ const Tooltip: React.FC<{ text: string; anchorRef: React.RefObject<HTMLSpanEleme
 };
 
 const SummaryCards: React.FC<Props> = ({ data }) => {
+  const { currentCompany } = useCompany();
+  const { user } = useAuth();
+  // ユーザーのプランを判定（仮実装：companyIdに基づく）
+  const getUserPlan = () => {
+    if (user?.companyId === 'memori.inc') {
+      return 'basicPlan';
+    } else if (user?.companyId === 'enterprise') {
+      return 'enterprisePlan';
+    } else {
+      return 'lightPlan';
+    }
+  };
+  const userPlan = getUserPlan();
+  const planFeatures = currentCompany?.planFeatures?.[userPlan as keyof typeof currentCompany.planFeatures] || currentCompany?.planFeatures?.lightPlan;
+
   const cards: Card[] = [
     {
       label: "来場者数",
@@ -52,21 +69,21 @@ const SummaryCards: React.FC<Props> = ({ data }) => {
       tooltip: "2分以上ブースに滞在した来場者の人数を示します",
       key: "total_visitors",
     },
-    {
+    planFeatures?.contactRate && {
       label: "接触者数",
       value: data.contact_count,
       unit: "人",
       tooltip: "スタッフが対応（話しかけ）した来場者数です",
       key: "contact_count",
     },
-    {
+    planFeatures?.opportunityLoss && {
       label: "機会損失数",
       value: data.lost_count,
       unit: "人",
       tooltip: "30秒以上注目されたが話しかけられなかった人数です",
       key: "lost_count",
     },
-    {
+    planFeatures?.contactRate && {
       label: "接触率",
       value: `${(data.contact_rate * 100).toFixed(1)}`,
       unit: "%",
@@ -87,7 +104,7 @@ const SummaryCards: React.FC<Props> = ({ data }) => {
       tooltip: "来場者の平均ブース滞在時間（分単位）です",
       key: "avg_stay_time",
     },
-  ];
+  ].filter(Boolean) as Card[];
 
   // カミングスーン用ダミーカードを追加
   const comingSoonCards: Card[] = Array.from({ length: 4 }, (_, i) => ({
@@ -120,7 +137,7 @@ const SummaryCards: React.FC<Props> = ({ data }) => {
                 onBlur={() => setHoveredIdx(null)}
                 tabIndex={0}
               >
-                {card.label}
+              {card.label}
                 <span className="tooltip-mark">？</span>
                 {hoveredIdx === idx && (
                   <Tooltip text={card.tooltip} anchorRef={{ current: tipRefs.current[idx] }} />
