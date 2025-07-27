@@ -11,6 +11,8 @@ import {
   LabelList,
   Legend
 } from "recharts";
+import { useCompany } from "../contexts/CompanyContext";
+import { useAuth } from "../contexts/AuthContext";
 
 interface DataPoint {
   hour: string;
@@ -25,6 +27,23 @@ interface Props {
 }
 
 const GraphPanel: React.FC<Props> = ({ data, id = "default" }) => {
+  const { currentCompany } = useCompany();
+  const { user } = useAuth();
+
+  // ユーザーのプランを判定（仮実装：companyIdに基づく）
+  const getUserPlan = () => {
+    if (user?.companyId === 'memori.inc') {
+      return 'basicPlan';
+    } else if (user?.companyId === 'enterprise') {
+      return 'enterprisePlan';
+    } else {
+      return 'lightPlan';
+    }
+  };
+
+  const userPlan = getUserPlan();
+  const planFeatures = currentCompany?.planFeatures?.[userPlan as keyof typeof currentCompany.planFeatures] || currentCompany?.planFeatures?.lightPlan;
+
   // データの検証と正規化をメモ化
   const validatedData = useMemo(() => {
     return Array.isArray(data) ? data : [];
@@ -131,38 +150,44 @@ const GraphPanel: React.FC<Props> = ({ data, id = "default" }) => {
                 style={{ fontSize: 11, fill: '#374151' }}
               />
             </Bar>
-            <Line
-              type="monotone"
-              dataKey="contact"
-              stroke={`url(#contactGradient-${id})`}
-              strokeWidth={3}
-              name="接触数"
-              strokeDasharray="5 5"
-              dot={{ 
-                r: 4, 
-                fill: '#f97316',
-                stroke: 'white',
-                strokeWidth: 2
-              }}
-              activeDot={{ r: 6, stroke: '#f97316', strokeWidth: 2 }}
-              hide={isAllZero}
-            />
-            <Line
-              type="monotone"
-              dataKey="lost"
-              stroke={`url(#lostGradient-${id})`}
-              strokeWidth={3}
-              name="機会損失"
-              strokeDasharray="8 4"
-              dot={{ 
-                r: 4, 
-                fill: '#e11d48',
-                stroke: 'white',
-                strokeWidth: 2
-              }}
-              activeDot={{ r: 6, stroke: '#e11d48', strokeWidth: 2 }}
-              hide={isAllZero}
-            />
+            {/* 接触数はベーシックプラン以上で表示 */}
+            {planFeatures?.contactRate && (
+              <Line
+                type="monotone"
+                dataKey="contact"
+                stroke={`url(#contactGradient-${id})`}
+                strokeWidth={3}
+                name="接触数"
+                strokeDasharray="5 5"
+                dot={{ 
+                  r: 4, 
+                  fill: '#f97316',
+                  stroke: 'white',
+                  strokeWidth: 2
+                }}
+                activeDot={{ r: 6, stroke: '#f97316', strokeWidth: 2 }}
+                hide={isAllZero}
+              />
+            )}
+            {/* 機会損失はベーシックプラン以上で表示 */}
+            {planFeatures?.opportunityLoss && (
+              <Line
+                type="monotone"
+                dataKey="lost"
+                stroke={`url(#lostGradient-${id})`}
+                strokeWidth={3}
+                name="機会損失"
+                strokeDasharray="8 4"
+                dot={{ 
+                  r: 4, 
+                  fill: '#e11d48',
+                  stroke: 'white',
+                  strokeWidth: 2
+                }}
+                activeDot={{ r: 6, stroke: '#e11d48', strokeWidth: 2 }}
+                hide={isAllZero}
+              />
+            )}
             
             {/* グラデーション定義 */}
             <defs>

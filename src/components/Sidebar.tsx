@@ -28,22 +28,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle }) => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // ユーザーのプランを判定（仮実装：companyIdに基づく）
-  const getUserPlan = () => {
-    // 実際の実装では、ユーザーのプラン情報を取得
-    // 現在はcompanyIdに基づいて判定
-    if (user?.companyId === 'memori.inc') {
-      return 'basicPlan';
-    } else if (user?.companyId === 'enterprise') {
-      return 'enterprisePlan';
-    } else {
-      return 'lightPlan';
-    }
-  };
-
-  const userPlan = getUserPlan();
-  const planFeatures = currentCompany?.planFeatures?.[userPlan as keyof typeof currentCompany.planFeatures] || currentCompany?.planFeatures?.lightPlan;
-
   // サイドバー本体のスタイル
   const sidebarStyle: React.CSSProperties = isMobile
     ? {
@@ -122,14 +106,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle }) => {
               ホーム
             </li>
             {(!isMobile && currentCompany?.features.realtimeDashboard) || isMobile ? (
-              planFeatures?.realtimeDashboard ? (
-                <li
-                  className={`nav-item ${location.pathname === "/realtime" ? "active" : ""}`}
-                  onClick={() => handleNavClick("/realtime")}
-                >
-                  リアルタイムダッシュボード
-                </li>
-              ) : null
+              <li
+                className={`nav-item ${location.pathname === "/realtime" ? "active" : ""}`}
+                onClick={() => handleNavClick("/realtime")}
+              >
+                リアルタイムダッシュボード
+              </li>
             ) : null}
             {(!isMobile && currentCompany?.features.searchDashboard) || isMobile ? (
               <li
@@ -139,16 +121,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle }) => {
                 過去データ検索
               </li>
             ) : null}
-            {/* プラン別機能制限に基づくメニュー */}
-            {planFeatures?.opportunityLoss && (
-              <li className="nav-item">機会損失判定</li>
-            )}
-            {planFeatures?.contactRate && (
-              <li className="nav-item">接触率</li>
-            )}
-            {planFeatures?.opportunityLossGraph && (
-              <li className="nav-item">機会損失グラフ</li>
-            )}
+            {/* プラン別機能制限に基づくメニューを削除 */}
             {/* スマホ時は他メニュー非表示 */}
             {!isMobile && currentCompany?.features.customReports && (
               <li className="nav-item">カスタムレポート</li>
