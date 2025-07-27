@@ -12,6 +12,28 @@ const AdminSettings: React.FC = () => {
     entry_line: "[[100,200],[400,200]]",
     loss_zone: "[[100,300],[400,300],[400,400],[100,400]]",
   });
+  const [planSettings, setPlanSettings] = useState({
+    lightPlan: {
+      visitorCount: true,
+      staffExclusion: true,
+      hourlyGraph: true,
+      averageTime: true,
+      realtimeDashboard: false,
+      opportunityLoss: false,
+      contactRate: false,
+      opportunityLossGraph: false,
+    },
+    basicPlan: {
+      visitorCount: true,
+      staffExclusion: true,
+      hourlyGraph: true,
+      averageTime: true,
+      realtimeDashboard: true,
+      opportunityLoss: true,
+      contactRate: true,
+      opportunityLossGraph: true,
+    },
+  });
   const [message, setMessage] = useState("");
 
   const handleUnlock = (e: React.FormEvent) => {
@@ -29,14 +51,24 @@ const AdminSettings: React.FC = () => {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handlePlanChange = (plan: 'lightPlan' | 'basicPlan', feature: string) => {
+    setPlanSettings(prev => ({
+      ...prev,
+      [plan]: {
+        ...prev[plan],
+        [feature]: !prev[plan][feature as keyof typeof prev[typeof plan]]
+      }
+    }));
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // ここでAPI送信や保存処理を実装
-    alert("設定を送信しました\n" + JSON.stringify(form, null, 2));
+    alert("設定を送信しました\n" + JSON.stringify({ ...form, planSettings }, null, 2));
   };
 
   return (
-    <div style={{ maxWidth: 480, margin: "40px auto", background: "#fff", borderRadius: 12, boxShadow: "0 2px 16px #0001", padding: 32 }}>
+    <div style={{ maxWidth: 600, margin: "40px auto", background: "#fff", borderRadius: 12, boxShadow: "0 2px 16px #0001", padding: 32 }}>
       <h2 style={{ textAlign: "center", marginBottom: 24 }}>管理者設定</h2>
       {!unlocked ? (
         <form onSubmit={handleUnlock} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
@@ -48,6 +80,7 @@ const AdminSettings: React.FC = () => {
         </form>
       ) : (
         <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+          <h3 style={{ marginBottom: 16, color: "#333" }}>基本設定</h3>
           <label>device_id
             <input name="device_id" value={form.device_id} onChange={handleChange} style={{ width: "100%", padding: 8, marginTop: 8 }} />
           </label>
@@ -63,7 +96,154 @@ const AdminSettings: React.FC = () => {
           <label>loss_zone（例: [[100,300],[400,300],[400,400],[100,400]]）
             <textarea name="loss_zone" value={form.loss_zone} onChange={handleChange} style={{ width: "100%", padding: 8, marginTop: 8, minHeight: 60 }} />
           </label>
-          <button type="submit" style={{ padding: 12, background: "#764ba2", color: "#fff", border: "none", borderRadius: 6, fontWeight: 700 }}>設定を送信</button>
+          
+          <h3 style={{ marginTop: 32, marginBottom: 16, color: "#333" }}>プラン別機能制限設定</h3>
+          
+          <div style={{ display: "flex", gap: 24 }}>
+            {/* ライトプラン */}
+            <div style={{ flex: 1, padding: 16, border: "1px solid #ddd", borderRadius: 8 }}>
+              <h4 style={{ marginBottom: 16, color: "#667eea", fontWeight: 700 }}>ライトプラン</h4>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input
+                    type="checkbox"
+                    checked={planSettings.lightPlan.visitorCount}
+                    onChange={() => handlePlanChange('lightPlan', 'visitorCount')}
+                  />
+                  来場者のカウント
+                </label>
+                <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input
+                    type="checkbox"
+                    checked={planSettings.lightPlan.staffExclusion}
+                    onChange={() => handlePlanChange('lightPlan', 'staffExclusion')}
+                  />
+                  スタッフ判定除外
+                </label>
+                <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input
+                    type="checkbox"
+                    checked={planSettings.lightPlan.hourlyGraph}
+                    onChange={() => handlePlanChange('lightPlan', 'hourlyGraph')}
+                  />
+                  時間帯別グラフ表示
+                </label>
+                <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input
+                    type="checkbox"
+                    checked={planSettings.lightPlan.averageTime}
+                    onChange={() => handlePlanChange('lightPlan', 'averageTime')}
+                  />
+                  平均時間の可視化
+                </label>
+                <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input
+                    type="checkbox"
+                    checked={planSettings.lightPlan.realtimeDashboard}
+                    onChange={() => handlePlanChange('lightPlan', 'realtimeDashboard')}
+                  />
+                  リアルタイムダッシュボード
+                </label>
+                <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input
+                    type="checkbox"
+                    checked={planSettings.lightPlan.opportunityLoss}
+                    onChange={() => handlePlanChange('lightPlan', 'opportunityLoss')}
+                  />
+                  機会損失判定
+                </label>
+                <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input
+                    type="checkbox"
+                    checked={planSettings.lightPlan.contactRate}
+                    onChange={() => handlePlanChange('lightPlan', 'contactRate')}
+                  />
+                  接触率
+                </label>
+                <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input
+                    type="checkbox"
+                    checked={planSettings.lightPlan.opportunityLossGraph}
+                    onChange={() => handlePlanChange('lightPlan', 'opportunityLossGraph')}
+                  />
+                  機会損失グラフ
+                </label>
+              </div>
+            </div>
+            
+            {/* ベーシックプラン */}
+            <div style={{ flex: 1, padding: 16, border: "1px solid #ddd", borderRadius: 8 }}>
+              <h4 style={{ marginBottom: 16, color: "#764ba2", fontWeight: 700 }}>ベーシックプラン</h4>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input
+                    type="checkbox"
+                    checked={planSettings.basicPlan.visitorCount}
+                    onChange={() => handlePlanChange('basicPlan', 'visitorCount')}
+                  />
+                  来場者のカウント
+                </label>
+                <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input
+                    type="checkbox"
+                    checked={planSettings.basicPlan.staffExclusion}
+                    onChange={() => handlePlanChange('basicPlan', 'staffExclusion')}
+                  />
+                  スタッフ判定除外
+                </label>
+                <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input
+                    type="checkbox"
+                    checked={planSettings.basicPlan.hourlyGraph}
+                    onChange={() => handlePlanChange('basicPlan', 'hourlyGraph')}
+                  />
+                  時間帯別グラフ表示
+                </label>
+                <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input
+                    type="checkbox"
+                    checked={planSettings.basicPlan.averageTime}
+                    onChange={() => handlePlanChange('basicPlan', 'averageTime')}
+                  />
+                  平均時間の可視化
+                </label>
+                <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input
+                    type="checkbox"
+                    checked={planSettings.basicPlan.realtimeDashboard}
+                    onChange={() => handlePlanChange('basicPlan', 'realtimeDashboard')}
+                  />
+                  リアルタイムダッシュボード
+                </label>
+                <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input
+                    type="checkbox"
+                    checked={planSettings.basicPlan.opportunityLoss}
+                    onChange={() => handlePlanChange('basicPlan', 'opportunityLoss')}
+                  />
+                  機会損失判定
+                </label>
+                <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input
+                    type="checkbox"
+                    checked={planSettings.basicPlan.contactRate}
+                    onChange={() => handlePlanChange('basicPlan', 'contactRate')}
+                  />
+                  接触率
+                </label>
+                <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input
+                    type="checkbox"
+                    checked={planSettings.basicPlan.opportunityLossGraph}
+                    onChange={() => handlePlanChange('basicPlan', 'opportunityLossGraph')}
+                  />
+                  機会損失グラフ
+                </label>
+              </div>
+            </div>
+          </div>
+          
+          <button type="submit" style={{ padding: 12, background: "#764ba2", color: "#fff", border: "none", borderRadius: 6, fontWeight: 700, marginTop: 16 }}>設定を送信</button>
         </form>
       )}
     </div>

@@ -13,6 +13,28 @@ interface CompanyConfig {
     visitorPanel: boolean;
     customReports: boolean;
   };
+  planFeatures: {
+    lightPlan: {
+      visitorCount: boolean;
+      staffExclusion: boolean;
+      hourlyGraph: boolean;
+      averageTime: boolean;
+      realtimeDashboard: boolean;
+      opportunityLoss: boolean;
+      contactRate: boolean;
+      opportunityLossGraph: boolean;
+    };
+    basicPlan: {
+      visitorCount: boolean;
+      staffExclusion: boolean;
+      hourlyGraph: boolean;
+      averageTime: boolean;
+      realtimeDashboard: boolean;
+      opportunityLoss: boolean;
+      contactRate: boolean;
+      opportunityLossGraph: boolean;
+    };
+  };
   apiEndpoints: {
     baseUrl: string;
     getLatestVisitors: string;
@@ -55,6 +77,28 @@ const defaultCompanyConfig: CompanyConfig = {
     searchDashboard: true,
     visitorPanel: true,
     customReports: false,
+  },
+  planFeatures: {
+    lightPlan: {
+      visitorCount: true,
+      staffExclusion: true,
+      hourlyGraph: true,
+      averageTime: true,
+      realtimeDashboard: false,
+      opportunityLoss: false,
+      contactRate: false,
+      opportunityLossGraph: false,
+    },
+    basicPlan: {
+      visitorCount: true,
+      staffExclusion: true,
+      hourlyGraph: true,
+      averageTime: true,
+      realtimeDashboard: true,
+      opportunityLoss: true,
+      contactRate: true,
+      opportunityLossGraph: true,
+    },
   },
   apiEndpoints: {
     baseUrl: 'https://tnabm11fyh.execute-api.ap-northeast-1.amazonaws.com/dev',
