@@ -60,6 +60,8 @@ interface CompanyContextType {
   isLoading: boolean;
   error: string | null;
   updateCompanyConfig: (config: Partial<CompanyConfig>) => void;
+  selectedPlan: string;
+  setPlan: (plan: string) => void;
 }
 
 const CompanyContext = createContext<CompanyContextType | undefined>(undefined);
@@ -162,7 +164,7 @@ const companyConfigs: Record<string, CompanyConfig> = {
     features: {
       realtimeDashboard: false,
       searchDashboard: true,
-      visitorPanel: true,
+      visitorPanel: false,
       customReports: false,
     },
   },
@@ -173,6 +175,14 @@ export const CompanyProvider: React.FC<CompanyProviderProps> = ({ children }) =>
   const [currentCompany, setCurrentCompany] = useState<CompanyConfig | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedPlan, setSelectedPlan] = useState<string>(() => {
+    return localStorage.getItem('selectedPlan') || 'lightPlan';
+  });
+
+  const setPlan = (plan: string) => {
+    setSelectedPlan(plan);
+    localStorage.setItem('selectedPlan', plan);
+  };
 
   useEffect(() => {
     if (user?.companyId) {
@@ -216,10 +226,21 @@ export const CompanyProvider: React.FC<CompanyProviderProps> = ({ children }) =>
     isLoading,
     error,
     updateCompanyConfig,
+    selectedPlan,
+    setPlan,
   };
 
   return (
-    <CompanyContext.Provider value={value}>
+    <CompanyContext.Provider
+      value={{
+        currentCompany,
+        isLoading,
+        error,
+        updateCompanyConfig,
+        selectedPlan,
+        setPlan,
+      }}
+    >
       {children}
     </CompanyContext.Provider>
   );

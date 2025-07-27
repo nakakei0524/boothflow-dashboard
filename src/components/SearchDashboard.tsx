@@ -167,7 +167,7 @@ const SearchDashboard: React.FC = React.memo(() => {
         setError('ネットワークエラーが発生しました。インターネット接続をご確認ください。');
       } else {
         // その他のエラー
-        setError(err.message || "データ取得に失敗しました");
+      setError(err.message || "データ取得に失敗しました");
       }
       setStats(dummyStats);
       setHourlyData([]);
@@ -184,12 +184,12 @@ const SearchDashboard: React.FC = React.memo(() => {
 
   // メモ化されたデータ
   const memoizedStats = useMemo(() => ({
-    total_visitors: stats.total_visitors,
-    contact_count: stats.contacted_count,
-    lost_count: stats.lost_opportunities,
-    pass_count: stats.passed_count,
-    contact_rate: stats.contact_rate,
-    avg_stay_time: stats.average_duration / 60,
+              total_visitors: stats.total_visitors,
+              contact_count: stats.contacted_count,
+              lost_count: stats.lost_opportunities,
+              pass_count: stats.passed_count,
+              contact_rate: stats.contact_rate,
+              avg_stay_time: stats.average_duration / 60,
   }), [stats]);
 
   // スマホ専用デザイン
@@ -274,9 +274,11 @@ const SearchDashboard: React.FC = React.memo(() => {
       <div
         className="dashboard-main"
         style={{
-          marginLeft: !isMobile && sidebarOpen ? "200px" : 0,
           transition: 'margin-left 0.2s',
           flex: 1,
+          maxWidth: 1000,
+          margin: '0 auto',
+          minWidth: 0,
         }}
       >
         {/* モバイル時のみメニューボタン表示 */}

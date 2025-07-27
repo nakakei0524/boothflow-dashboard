@@ -69,26 +69,29 @@ const SummaryCards: React.FC<Props> = ({ data }) => {
       tooltip: "2分以上ブースに滞在した来場者の人数を示します",
       key: "total_visitors",
     },
-    planFeatures?.contactRate && {
+    {
       label: "接触者数",
-      value: data.contact_count,
+      value: planFeatures?.contactRate ? data.contact_count : "-",
       unit: "人",
-      tooltip: "スタッフが対応（話しかけ）した来場者数です",
+      tooltip: planFeatures?.contactRate ? "スタッフが対応（話しかけ）した来場者数です" : "このプランでは使えません",
       key: "contact_count",
+      comingSoon: !planFeatures?.contactRate,
     },
-    planFeatures?.opportunityLoss && {
+    {
       label: "機会損失数",
-      value: data.lost_count,
+      value: planFeatures?.opportunityLoss ? data.lost_count : "-",
       unit: "人",
-      tooltip: "30秒以上注目されたが話しかけられなかった人数です",
+      tooltip: planFeatures?.opportunityLoss ? "30秒以上注目されたが話しかけられなかった人数です" : "このプランでは使えません",
       key: "lost_count",
+      comingSoon: !planFeatures?.opportunityLoss,
     },
-    planFeatures?.contactRate && {
+    {
       label: "接触率",
-      value: `${(data.contact_rate * 100).toFixed(1)}`,
+      value: planFeatures?.contactRate ? `${(data.contact_rate * 100).toFixed(1)}` : "-",
       unit: "%",
-      tooltip: "来場者のうち接触（話しかけ）できた割合です",
+      tooltip: planFeatures?.contactRate ? "来場者のうち接触（話しかけ）できた割合です" : "このプランでは使えません",
       key: "contact_rate",
+      comingSoon: !planFeatures?.contactRate,
     },
     {
       label: "通過人数",
@@ -104,7 +107,7 @@ const SummaryCards: React.FC<Props> = ({ data }) => {
       tooltip: "来場者の平均ブース滞在時間（分単位）です",
       key: "avg_stay_time",
     },
-  ].filter(Boolean) as Card[];
+  ];
 
   // カミングスーン用ダミーカードを追加
   const comingSoonCards: Card[] = Array.from({ length: 4 }, (_, i) => ({
@@ -126,7 +129,7 @@ const SummaryCards: React.FC<Props> = ({ data }) => {
     <div className="summary-cards-wrapper">
       <div className="summary-cards-grid">
         {allCards.map((card, idx) => (
-          <div key={card.key || idx} className={`summary-card${card.comingSoon ? " coming-soon-card" : ""}`}>
+          <div key={card.key || idx} className={`summary-card${card.comingSoon ? " coming-soon-card" : ""}`} style={card.comingSoon ? { opacity: 0.5, background: '#eee', color: '#888' } : {}}>
             <div className="summary-label">
               <span
                 className="tooltip-icon"
@@ -148,7 +151,7 @@ const SummaryCards: React.FC<Props> = ({ data }) => {
               {card.value} <span className="summary-unit">{card.unit}</span>
             </div>
             {card.comingSoon && (
-              <div className="coming-soon-badge">準備中</div>
+              <div className="coming-soon-badge">このプランでは使えません</div>
             )}
           </div>
         ))}

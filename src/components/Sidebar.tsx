@@ -17,7 +17,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuth();
-  const { currentCompany } = useCompany();
+  const { currentCompany, selectedPlan } = useCompany();
 
   // レスポンシブ判定
   const [isMobile, setIsMobile] = React.useState(false);
@@ -88,6 +88,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle }) => {
     } catch (error) {
       console.error('ログアウトエラー:', error);
     }
+  };
+
+  // プラン名表示用
+  const planNameMap: Record<string, string> = {
+    lightPlan: 'ライトプラン',
+    basicPlan: 'ベーシックプラン',
+    enterprisePlan: 'エンタープライズプラン',
   };
 
   return (
@@ -194,6 +201,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle }) => {
                 wordBreak: 'break-all',
               }}>{user?.email}</div>
             </div>
+          </div>
+          <div style={{ marginTop: 8, color: '#fff', fontWeight: 600, fontSize: 13 }}>
+            現在のプラン：{planNameMap[selectedPlan] || 'ライトプラン'}
           </div>
           <button onClick={handleLogout} className="logout-button" style={{ marginTop: 16, width: '100%' }}>
             ログアウト

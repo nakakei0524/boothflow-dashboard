@@ -53,7 +53,7 @@ const PLAN_CONFIGS = {
 };
 
 const AdminSettings: React.FC = () => {
-  const { currentCompany, updateCompanyConfig } = useCompany();
+  const { currentCompany, updateCompanyConfig, setPlan } = useCompany();
   const [unlocked, setUnlocked] = useState(false);
   const [inputPassword, setInputPassword] = useState("");
   const [form, setForm] = useState({
@@ -99,6 +99,7 @@ const AdminSettings: React.FC = () => {
         enterprisePlan: planConfig.features
       }
     });
+    setPlan(planKey);
     
     alert(`${planConfig.name}の機能設定を適用しました！`);
   };
