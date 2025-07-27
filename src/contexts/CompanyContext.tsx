@@ -34,6 +34,16 @@ interface CompanyConfig {
       contactRate: boolean;
       opportunityLossGraph: boolean;
     };
+    enterprisePlan: {
+      visitorCount: boolean;
+      staffExclusion: boolean;
+      hourlyGraph: boolean;
+      averageTime: boolean;
+      realtimeDashboard: boolean;
+      opportunityLoss: boolean;
+      contactRate: boolean;
+      opportunityLossGraph: boolean;
+    };
   };
   apiEndpoints: {
     baseUrl: string;
@@ -90,6 +100,16 @@ const defaultCompanyConfig: CompanyConfig = {
       opportunityLossGraph: false,
     },
     basicPlan: {
+      visitorCount: true,
+      staffExclusion: true,
+      hourlyGraph: true,
+      averageTime: true,
+      realtimeDashboard: true,
+      opportunityLoss: true,
+      contactRate: true,
+      opportunityLossGraph: true,
+    },
+    enterprisePlan: {
       visitorCount: true,
       staffExclusion: true,
       hourlyGraph: true,

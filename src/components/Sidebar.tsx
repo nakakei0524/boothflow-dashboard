@@ -34,6 +34,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle }) => {
     // 現在はcompanyIdに基づいて判定
     if (user?.companyId === 'memori.inc') {
       return 'basicPlan';
+    } else if (user?.companyId === 'enterprise') {
+      return 'enterprisePlan';
     } else {
       return 'lightPlan';
     }

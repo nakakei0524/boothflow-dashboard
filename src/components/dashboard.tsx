@@ -40,6 +40,8 @@ const Dashboard: React.FC = () => {
   const getUserPlan = () => {
     if (user?.companyId === 'memori.inc') {
       return 'basicPlan';
+    } else if (user?.companyId === 'enterprise') {
+      return 'enterprisePlan';
     } else {
       return 'lightPlan';
     }
