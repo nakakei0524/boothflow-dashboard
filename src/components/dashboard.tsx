@@ -36,6 +36,18 @@ const Dashboard: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
 
+  // ユーザーのプランを判定（仮実装：companyIdに基づく）
+  const getUserPlan = () => {
+    if (user?.companyId === 'memori.inc') {
+      return 'basicPlan';
+    } else {
+      return 'lightPlan';
+    }
+  };
+
+  const userPlan = getUserPlan();
+  const planFeatures = currentCompany?.planFeatures?.[userPlan as keyof typeof currentCompany.planFeatures] || currentCompany?.planFeatures?.lightPlan;
+
   React.useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth <= 700);
     checkMobile();
@@ -133,11 +145,32 @@ const Dashboard: React.FC = () => {
           {stats && (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <VisitorList stats={stats} />
+              {/* プラン制限に基づく機能表示 */}
+              {planFeatures?.opportunityLoss && (
+                <div className="bg-white p-6 rounded-lg shadow">
+                  <h3 className="text-lg font-semibold mb-4">機会損失判定</h3>
+                  <p className="text-gray-600">機会損失: {stats.lost_opportunities}件</p>
+                </div>
+              )}
+              {planFeatures?.contactRate && (
+                <div className="bg-white p-6 rounded-lg shadow">
+                  <h3 className="text-lg font-semibold mb-4">接触率</h3>
+                  <p className="text-gray-600">接触率: {stats.contact_rate}%</p>
+                </div>
+              )}
             </div>
           )}
-          {hourlyData.length > 0 && (
+          {hourlyData.length > 0 && planFeatures?.hourlyGraph && (
             <div className="grid grid-cols-1">
               <GraphPanel data={hourlyData} />
+            </div>
+          )}
+          {planFeatures?.opportunityLossGraph && hourlyData.length > 0 && (
+            <div className="grid grid-cols-1 mt-6">
+              <div className="bg-white p-6 rounded-lg shadow">
+                <h3 className="text-lg font-semibold mb-4">機会損失グラフ</h3>
+                <p className="text-gray-600">機会損失の時間帯別グラフがここに表示されます</p>
+              </div>
             </div>
           )}
         </main>

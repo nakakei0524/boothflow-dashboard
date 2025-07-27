@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import { useCompany } from "../contexts/CompanyContext";
 
 const ADMIN_PASSWORD = "admin2025";
 
 const AdminSettings: React.FC = () => {
+  const { currentCompany, updateCompanyConfig } = useCompany();
   const [unlocked, setUnlocked] = useState(false);
   const [inputPassword, setInputPassword] = useState("");
   const [form, setForm] = useState({
@@ -36,6 +38,13 @@ const AdminSettings: React.FC = () => {
   });
   const [message, setMessage] = useState("");
 
+  // 初期化時に現在の設定を読み込み
+  React.useEffect(() => {
+    if (currentCompany?.planFeatures) {
+      setPlanSettings(currentCompany.planFeatures);
+    }
+  }, [currentCompany]);
+
   const handleUnlock = (e: React.FormEvent) => {
     e.preventDefault();
     if (inputPassword === ADMIN_PASSWORD) {
@@ -52,13 +61,20 @@ const AdminSettings: React.FC = () => {
   };
 
   const handlePlanChange = (plan: 'lightPlan' | 'basicPlan', feature: string) => {
-    setPlanSettings(prev => ({
-      ...prev,
+    const newPlanSettings = {
+      ...planSettings,
       [plan]: {
-        ...prev[plan],
-        [feature]: !prev[plan][feature as keyof typeof prev[typeof plan]]
+        ...planSettings[plan],
+        [feature]: !planSettings[plan][feature as keyof typeof planSettings[typeof plan]]
       }
-    }));
+    };
+    
+    setPlanSettings(newPlanSettings);
+    
+    // CompanyContextの設定を更新
+    updateCompanyConfig({
+      planFeatures: newPlanSettings
+    });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
