@@ -120,7 +120,7 @@ const SummaryCards: React.FC<Props> = ({ data }) => {
     <div className="summary-cards-wrapper">
       <div className="summary-cards-grid">
         {allCards.map((card, idx) => (
-          <div key={card.key || idx} className="summary-card">
+          <div key={card.key || idx} className={`summary-card${card.comingSoon ? " coming-soon-card" : ""}`} style={card.comingSoon ? { opacity: 0.5, background: '#eee', color: '#888' } : {}}>
             <div className="summary-label">
               <span
                 className="tooltip-icon"
@@ -141,6 +141,9 @@ const SummaryCards: React.FC<Props> = ({ data }) => {
             <div className="summary-value">
               {card.value} <span className="summary-unit">{card.unit}</span>
             </div>
+            {card.comingSoon && (
+              <div className="coming-soon-badge">このプランでは使えません</div>
+            )}
           </div>
         ))}
       </div>
