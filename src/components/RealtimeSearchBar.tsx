@@ -133,12 +133,12 @@ const RealtimeSearchBar: React.FC<Props> = ({
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <label style={{ fontWeight: 600, fontSize: 14, color: '#495057', minWidth: '60px' }}>会期名：</label>
-          <input
-            type="text"
-            placeholder="キーワード"
-            className="search-input"
-            value={sessionId}
-            onChange={(e) => onSessionChange(e.target.value)}
+        <input
+          type="text"
+          placeholder="キーワード"
+          className="search-input"
+          value={sessionId}
+          onChange={(e) => onSessionChange(e.target.value)}
             style={{ 
               padding: '8px 12px',
               border: '1px solid #ced4da',
@@ -151,11 +151,11 @@ const RealtimeSearchBar: React.FC<Props> = ({
         
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <label style={{ fontWeight: 600, fontSize: 14, color: '#495057', minWidth: '40px' }}>日付：</label>
-          <input
-            type="date"
-            className="date-input"
-            value={baseDate}
-            onChange={(e) => onDateChange(e.target.value)}
+        <input
+          type="date"
+          className="date-input"
+          value={baseDate}
+          onChange={(e) => onDateChange(e.target.value)}
             style={{ 
               padding: '8px 12px',
               border: '1px solid #ced4da',
@@ -380,7 +380,7 @@ const RealtimeSearchBar: React.FC<Props> = ({
               }}
             >
               映像確認
-            </button>
+        </button>
           </div>
         </div>
       </div>

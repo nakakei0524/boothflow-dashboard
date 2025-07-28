@@ -109,17 +109,8 @@ const SummaryCards: React.FC<Props> = ({ data }) => {
     },
   ];
 
-  // カミングスーン用ダミーカードを追加
-  const comingSoonCards: Card[] = Array.from({ length: 4 }, (_, i) => ({
-    label: "Coming Soon",
-    value: "-",
-    unit: "",
-    tooltip: "新機能を準備中です",
-    comingSoon: true,
-    key: `coming-soon-${i}`,
-  }));
-
-  const allCards: Card[] = [...cards, ...comingSoonCards];
+  // カミングスーン用ダミーカードを削除
+  const allCards: Card[] = cards;
 
   // ツールチップの表示状態と参照を一元管理
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
@@ -129,7 +120,7 @@ const SummaryCards: React.FC<Props> = ({ data }) => {
     <div className="summary-cards-wrapper">
       <div className="summary-cards-grid">
         {allCards.map((card, idx) => (
-          <div key={card.key || idx} className={`summary-card${card.comingSoon ? " coming-soon-card" : ""}`} style={card.comingSoon ? { opacity: 0.5, background: '#eee', color: '#888' } : {}}>
+          <div key={card.key || idx} className="summary-card">
             <div className="summary-label">
               <span
                 className="tooltip-icon"
@@ -150,9 +141,6 @@ const SummaryCards: React.FC<Props> = ({ data }) => {
             <div className="summary-value">
               {card.value} <span className="summary-unit">{card.unit}</span>
             </div>
-            {card.comingSoon && (
-              <div className="coming-soon-badge">このプランでは使えません</div>
-            )}
           </div>
         ))}
       </div>
