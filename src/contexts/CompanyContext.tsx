@@ -23,6 +23,7 @@ interface CompanyConfig {
       opportunityLoss: boolean;
       contactRate: boolean;
       opportunityLossGraph: boolean;
+      searchDashboard: boolean;
     };
     basicPlan: {
       visitorCount: boolean;
@@ -33,6 +34,7 @@ interface CompanyConfig {
       opportunityLoss: boolean;
       contactRate: boolean;
       opportunityLossGraph: boolean;
+      searchDashboard: boolean;
     };
     enterprisePlan: {
       visitorCount: boolean;
@@ -43,6 +45,7 @@ interface CompanyConfig {
       opportunityLoss: boolean;
       contactRate: boolean;
       opportunityLossGraph: boolean;
+      searchDashboard: boolean;
     };
   };
   apiEndpoints: {
@@ -100,6 +103,7 @@ const defaultCompanyConfig: CompanyConfig = {
       opportunityLoss: false,
       contactRate: false,
       opportunityLossGraph: false,
+      searchDashboard: false,
     },
     basicPlan: {
       visitorCount: true,
@@ -110,6 +114,7 @@ const defaultCompanyConfig: CompanyConfig = {
       opportunityLoss: true,
       contactRate: true,
       opportunityLossGraph: true,
+      searchDashboard: false,
     },
     enterprisePlan: {
       visitorCount: true,
@@ -120,6 +125,7 @@ const defaultCompanyConfig: CompanyConfig = {
       opportunityLoss: true,
       contactRate: true,
       opportunityLossGraph: true,
+      searchDashboard: true,
     },
   },
   apiEndpoints: {

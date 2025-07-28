@@ -18,6 +18,7 @@ const PLAN_CONFIGS = {
       opportunityLoss: false,
       contactRate: false,
       opportunityLossGraph: false,
+      searchDashboard: false,
     }
   },
   basicPlan: {
@@ -33,6 +34,7 @@ const PLAN_CONFIGS = {
       opportunityLoss: true,
       contactRate: true,
       opportunityLossGraph: true,
+      searchDashboard: false,
     }
   },
   enterprisePlan: {
@@ -48,6 +50,7 @@ const PLAN_CONFIGS = {
       opportunityLoss: true,
       contactRate: true,
       opportunityLossGraph: true,
+      searchDashboard: true,
     }
   }
 };
@@ -64,11 +67,46 @@ const AdminSettings: React.FC = () => {
     loss_zone: "[[100,300],[400,300],[400,400],[100,400]]",
   });
   const [message, setMessage] = useState("");
+  const [planFeatures, setPlanFeatures] = useState({
+    lightPlan: {
+      visitorCount: true,
+      staffExclusion: true,
+      hourlyGraph: true,
+      averageTime: true,
+      realtimeDashboard: false,
+      opportunityLoss: false,
+      contactRate: false,
+      opportunityLossGraph: false,
+      searchDashboard: false,
+    },
+    basicPlan: {
+      visitorCount: true,
+      staffExclusion: true,
+      hourlyGraph: true,
+      averageTime: true,
+      realtimeDashboard: true,
+      opportunityLoss: true,
+      contactRate: true,
+      opportunityLossGraph: true,
+      searchDashboard: false,
+    },
+    enterprisePlan: {
+      visitorCount: true,
+      staffExclusion: true,
+      hourlyGraph: true,
+      averageTime: true,
+      realtimeDashboard: true,
+      opportunityLoss: true,
+      contactRate: true,
+      opportunityLossGraph: true,
+      searchDashboard: true,
+    },
+  });
 
   // 初期化時に現在の設定を読み込み
   React.useEffect(() => {
     if (currentCompany?.planFeatures) {
-      // 現在の設定を確認
+      setPlanFeatures(currentCompany.planFeatures);
       console.log("現在のプラン設定:", currentCompany.planFeatures);
     }
   }, [currentCompany]);
@@ -88,6 +126,16 @@ const AdminSettings: React.FC = () => {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleFeatureChange = (plan: string, feature: string, checked: boolean) => {
+    setPlanFeatures(prev => ({
+      ...prev,
+      [plan]: {
+        ...prev[plan as keyof typeof prev],
+        [feature]: checked
+      }
+    }));
+  };
+
   const handlePlanChange = (planKey: 'lightPlan' | 'basicPlan' | 'enterprisePlan') => {
     const planConfig = PLAN_CONFIGS[planKey];
     
@@ -102,6 +150,13 @@ const AdminSettings: React.FC = () => {
     setPlan(planKey);
     
     alert(`${planConfig.name}の機能設定を適用しました！`);
+  };
+
+  const handleSaveFeatures = () => {
+    updateCompanyConfig({
+      planFeatures: planFeatures
+    });
+    alert("機能制限設定を保存しました！");
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -227,7 +282,264 @@ const AdminSettings: React.FC = () => {
               </button>
             </div>
           </div>
+
+          <h3 style={{ marginTop: 32, marginBottom: 16, color: "#333" }}>詳細機能制限設定</h3>
           
+          <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+            {/* ライトプラン詳細設定 */}
+            <div style={{ padding: 20, border: "1px solid #667eea", borderRadius: 8, background: "#f8f9ff" }}>
+              <h4 style={{ color: "#667eea", fontWeight: 700, marginBottom: 12 }}>ライトプラン機能制限</h4>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 8 }}>
+                <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input
+                    type="checkbox"
+                    checked={planFeatures.lightPlan.visitorCount}
+                    onChange={(e) => handleFeatureChange('lightPlan', 'visitorCount', e.target.checked)}
+                  />
+                  来場者カウント
+                </label>
+                <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input
+                    type="checkbox"
+                    checked={planFeatures.lightPlan.staffExclusion}
+                    onChange={(e) => handleFeatureChange('lightPlan', 'staffExclusion', e.target.checked)}
+                  />
+                  スタッフ除外
+                </label>
+                <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input
+                    type="checkbox"
+                    checked={planFeatures.lightPlan.hourlyGraph}
+                    onChange={(e) => handleFeatureChange('lightPlan', 'hourlyGraph', e.target.checked)}
+                  />
+                  時間帯別グラフ
+                </label>
+                <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input
+                    type="checkbox"
+                    checked={planFeatures.lightPlan.averageTime}
+                    onChange={(e) => handleFeatureChange('lightPlan', 'averageTime', e.target.checked)}
+                  />
+                  平均滞在時間
+                </label>
+                <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input
+                    type="checkbox"
+                    checked={planFeatures.lightPlan.realtimeDashboard}
+                    onChange={(e) => handleFeatureChange('lightPlan', 'realtimeDashboard', e.target.checked)}
+                  />
+                  リアルタイムダッシュボード
+                </label>
+                <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input
+                    type="checkbox"
+                    checked={planFeatures.lightPlan.opportunityLoss}
+                    onChange={(e) => handleFeatureChange('lightPlan', 'opportunityLoss', e.target.checked)}
+                  />
+                  機会損失判定
+                </label>
+                <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input
+                    type="checkbox"
+                    checked={planFeatures.lightPlan.contactRate}
+                    onChange={(e) => handleFeatureChange('lightPlan', 'contactRate', e.target.checked)}
+                  />
+                  接触率
+                </label>
+                <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input
+                    type="checkbox"
+                    checked={planFeatures.lightPlan.opportunityLossGraph}
+                    onChange={(e) => handleFeatureChange('lightPlan', 'opportunityLossGraph', e.target.checked)}
+                  />
+                  機会損失グラフ
+                </label>
+                <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input
+                    type="checkbox"
+                    checked={planFeatures.lightPlan.searchDashboard}
+                    onChange={(e) => handleFeatureChange('lightPlan', 'searchDashboard', e.target.checked)}
+                  />
+                  過去データ検索
+                </label>
+              </div>
+            </div>
+
+            {/* ベーシックプラン詳細設定 */}
+            <div style={{ padding: 20, border: "1px solid #764ba2", borderRadius: 8, background: "#f8f4ff" }}>
+              <h4 style={{ color: "#764ba2", fontWeight: 700, marginBottom: 12 }}>ベーシックプラン機能制限</h4>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 8 }}>
+                <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input
+                    type="checkbox"
+                    checked={planFeatures.basicPlan.visitorCount}
+                    onChange={(e) => handleFeatureChange('basicPlan', 'visitorCount', e.target.checked)}
+                  />
+                  来場者カウント
+                </label>
+                <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input
+                    type="checkbox"
+                    checked={planFeatures.basicPlan.staffExclusion}
+                    onChange={(e) => handleFeatureChange('basicPlan', 'staffExclusion', e.target.checked)}
+                  />
+                  スタッフ除外
+                </label>
+                <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input
+                    type="checkbox"
+                    checked={planFeatures.basicPlan.hourlyGraph}
+                    onChange={(e) => handleFeatureChange('basicPlan', 'hourlyGraph', e.target.checked)}
+                  />
+                  時間帯別グラフ
+                </label>
+                <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input
+                    type="checkbox"
+                    checked={planFeatures.basicPlan.averageTime}
+                    onChange={(e) => handleFeatureChange('basicPlan', 'averageTime', e.target.checked)}
+                  />
+                  平均滞在時間
+                </label>
+                <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input
+                    type="checkbox"
+                    checked={planFeatures.basicPlan.realtimeDashboard}
+                    onChange={(e) => handleFeatureChange('basicPlan', 'realtimeDashboard', e.target.checked)}
+                  />
+                  リアルタイムダッシュボード
+                </label>
+                <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input
+                    type="checkbox"
+                    checked={planFeatures.basicPlan.opportunityLoss}
+                    onChange={(e) => handleFeatureChange('basicPlan', 'opportunityLoss', e.target.checked)}
+                  />
+                  機会損失判定
+                </label>
+                <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input
+                    type="checkbox"
+                    checked={planFeatures.basicPlan.contactRate}
+                    onChange={(e) => handleFeatureChange('basicPlan', 'contactRate', e.target.checked)}
+                  />
+                  接触率
+                </label>
+                <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input
+                    type="checkbox"
+                    checked={planFeatures.basicPlan.opportunityLossGraph}
+                    onChange={(e) => handleFeatureChange('basicPlan', 'opportunityLossGraph', e.target.checked)}
+                  />
+                  機会損失グラフ
+                </label>
+                <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input
+                    type="checkbox"
+                    checked={planFeatures.basicPlan.searchDashboard}
+                    onChange={(e) => handleFeatureChange('basicPlan', 'searchDashboard', e.target.checked)}
+                  />
+                  過去データ検索
+                </label>
+              </div>
+            </div>
+
+            {/* エンタープライズプラン詳細設定 */}
+            <div style={{ padding: 20, border: "1px solid #27ae60", borderRadius: 8, background: "#f4fff8" }}>
+              <h4 style={{ color: "#27ae60", fontWeight: 700, marginBottom: 12 }}>エンタープライズプラン機能制限</h4>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 8 }}>
+                <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input
+                    type="checkbox"
+                    checked={planFeatures.enterprisePlan.visitorCount}
+                    onChange={(e) => handleFeatureChange('enterprisePlan', 'visitorCount', e.target.checked)}
+                  />
+                  来場者カウント
+                </label>
+                <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input
+                    type="checkbox"
+                    checked={planFeatures.enterprisePlan.staffExclusion}
+                    onChange={(e) => handleFeatureChange('enterprisePlan', 'staffExclusion', e.target.checked)}
+                  />
+                  スタッフ除外
+                </label>
+                <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input
+                    type="checkbox"
+                    checked={planFeatures.enterprisePlan.hourlyGraph}
+                    onChange={(e) => handleFeatureChange('enterprisePlan', 'hourlyGraph', e.target.checked)}
+                  />
+                  時間帯別グラフ
+                </label>
+                <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input
+                    type="checkbox"
+                    checked={planFeatures.enterprisePlan.averageTime}
+                    onChange={(e) => handleFeatureChange('enterprisePlan', 'averageTime', e.target.checked)}
+                  />
+                  平均滞在時間
+                </label>
+                <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input
+                    type="checkbox"
+                    checked={planFeatures.enterprisePlan.realtimeDashboard}
+                    onChange={(e) => handleFeatureChange('enterprisePlan', 'realtimeDashboard', e.target.checked)}
+                  />
+                  リアルタイムダッシュボード
+                </label>
+                <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input
+                    type="checkbox"
+                    checked={planFeatures.enterprisePlan.opportunityLoss}
+                    onChange={(e) => handleFeatureChange('enterprisePlan', 'opportunityLoss', e.target.checked)}
+                  />
+                  機会損失判定
+                </label>
+                <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input
+                    type="checkbox"
+                    checked={planFeatures.enterprisePlan.contactRate}
+                    onChange={(e) => handleFeatureChange('enterprisePlan', 'contactRate', e.target.checked)}
+                  />
+                  接触率
+                </label>
+                <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input
+                    type="checkbox"
+                    checked={planFeatures.enterprisePlan.opportunityLossGraph}
+                    onChange={(e) => handleFeatureChange('enterprisePlan', 'opportunityLossGraph', e.target.checked)}
+                  />
+                  機会損失グラフ
+                </label>
+                <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input
+                    type="checkbox"
+                    checked={planFeatures.enterprisePlan.searchDashboard}
+                    onChange={(e) => handleFeatureChange('enterprisePlan', 'searchDashboard', e.target.checked)}
+                  />
+                  過去データ検索
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <button 
+            type="button" 
+            onClick={handleSaveFeatures}
+            style={{ 
+              padding: "12px 24px", 
+              background: "#28a745", 
+              color: "#fff", 
+              border: "none", 
+              borderRadius: 8, 
+              fontWeight: 700,
+              cursor: "pointer",
+              marginTop: 16
+            }}
+          >
+            機能制限設定を保存
+          </button>
           <button type="submit" style={{ padding: 12, background: "#764ba2", color: "#fff", border: "none", borderRadius: 6, fontWeight: 700, marginTop: 16 }}>設定を送信</button>
         </form>
       )}

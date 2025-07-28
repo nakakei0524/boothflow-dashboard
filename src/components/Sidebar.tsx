@@ -97,6 +97,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle }) => {
     enterprisePlan: 'エンタープライズプラン',
   };
 
+  // 現在のプランの機能を取得
+  const currentPlanFeatures = currentCompany?.planFeatures?.[selectedPlan as keyof typeof currentCompany.planFeatures] || currentCompany?.planFeatures?.lightPlan;
+
   return (
     <>
       {overlay}
@@ -120,7 +123,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle }) => {
                 リアルタイムダッシュボード
               </li>
             ) : null}
-            {(!isMobile && currentCompany?.features.searchDashboard) || isMobile ? (
+            {currentPlanFeatures?.searchDashboard ? (
               <li
                 className={`nav-item ${location.pathname === "/search" ? "active" : ""}`}
                 onClick={() => handleNavClick("/search")}
