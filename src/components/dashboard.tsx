@@ -148,30 +148,84 @@ const Dashboard: React.FC = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <VisitorList stats={stats} />
               {/* プラン制限に基づく機能表示 */}
-              {planFeatures?.opportunityLoss && (
-                <div className="bg-white p-6 rounded-lg shadow">
-                  <h3 className="text-lg font-semibold mb-4">機会損失判定</h3>
-                  <p className="text-gray-600">機会損失: {stats.lost_opportunities}件</p>
-                </div>
-              )}
-              {planFeatures?.contactRate && (
-                <div className="bg-white p-6 rounded-lg shadow">
-                  <h3 className="text-lg font-semibold mb-4">接触率</h3>
-                  <p className="text-gray-600">接触率: {stats.contact_rate}%</p>
-                </div>
-              )}
+              <div className="bg-white p-6 rounded-lg shadow" style={!planFeatures?.opportunityLoss ? { opacity: 0.5, background: '#eee' } : {}}>
+                <h3 className="text-lg font-semibold mb-4">機会損失判定</h3>
+                <p className="text-gray-600">機会損失: {planFeatures?.opportunityLoss ? stats.lost_opportunities : '-'}件</p>
+                {!planFeatures?.opportunityLoss && (
+                  <div style={{ 
+                    background: '#ff6b6b', 
+                    color: '#fff', 
+                    padding: '4px 8px', 
+                    borderRadius: '4px', 
+                    fontSize: '12px', 
+                    fontWeight: '600',
+                    marginTop: '8px',
+                    display: 'inline-block'
+                  }}>
+                    このプランでは使えません
+                  </div>
+                )}
+              </div>
+              <div className="bg-white p-6 rounded-lg shadow" style={!planFeatures?.contactRate ? { opacity: 0.5, background: '#eee' } : {}}>
+                <h3 className="text-lg font-semibold mb-4">接触率</h3>
+                <p className="text-gray-600">接触率: {planFeatures?.contactRate ? `${stats.contact_rate}%` : '-'}</p>
+                {!planFeatures?.contactRate && (
+                  <div style={{ 
+                    background: '#ff6b6b', 
+                    color: '#fff', 
+                    padding: '4px 8px', 
+                    borderRadius: '4px', 
+                    fontSize: '12px', 
+                    fontWeight: '600',
+                    marginTop: '8px',
+                    display: 'inline-block'
+                  }}>
+                    このプランでは使えません
+                  </div>
+                )}
+              </div>
             </div>
           )}
-          {hourlyData.length > 0 && planFeatures?.hourlyGraph && (
+          {hourlyData.length > 0 && (
             <div className="grid grid-cols-1">
-              <GraphPanel data={hourlyData} />
+              <div style={!planFeatures?.hourlyGraph ? { opacity: 0.5, background: '#eee' } : {}}>
+                <GraphPanel data={hourlyData} />
+                {!planFeatures?.hourlyGraph && (
+                  <div style={{ 
+                    background: '#ff6b6b', 
+                    color: '#fff', 
+                    padding: '8px 12px', 
+                    borderRadius: '6px', 
+                    fontSize: '14px', 
+                    fontWeight: '600',
+                    marginTop: '12px',
+                    textAlign: 'center'
+                  }}>
+                    このプランでは使えません
+                  </div>
+                )}
+              </div>
             </div>
           )}
-          {planFeatures?.opportunityLossGraph && hourlyData.length > 0 && (
+          {hourlyData.length > 0 && (
             <div className="grid grid-cols-1 mt-6">
-              <div className="bg-white p-6 rounded-lg shadow">
+              <div className="bg-white p-6 rounded-lg shadow" style={!planFeatures?.opportunityLossGraph ? { opacity: 0.5, background: '#eee' } : {}}>
                 <h3 className="text-lg font-semibold mb-4">機会損失グラフ</h3>
                 <p className="text-gray-600">機会損失の時間帯別グラフがここに表示されます</p>
+                {!planFeatures?.opportunityLossGraph && (
+                  <div style={{ 
+                    background: '#ff6b6b', 
+                    color: '#fff', 
+                    padding: '4px 8px', 
+                    borderRadius: '4px', 
+                    fontSize: '12px', 
+                    fontWeight: '600',
+                    marginTop: '8px',
+                    display: 'inline-block'
+                  }}>
+                    このプランでは使えません
+                  </div>
+                )}
               </div>
             </div>
           )}
