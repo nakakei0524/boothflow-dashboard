@@ -4,7 +4,7 @@ import { useCompany } from "../contexts/CompanyContext";
 const ADMIN_PASSWORD = "admin2025";
 
 const AdminSettings: React.FC = () => {
-  const { currentCompany, updateCompanyConfig, setPlan } = useCompany();
+  const { currentCompany, updateCompanyConfig, setPlan, selectedPlan } = useCompany();
   const [unlocked, setUnlocked] = useState(false);
   const [inputPassword, setInputPassword] = useState("");
   const [form, setForm] = useState({
@@ -56,8 +56,9 @@ const AdminSettings: React.FC = () => {
     if (currentCompany?.planFeatures) {
       setPlanFeatures(currentCompany.planFeatures);
       console.log("現在のプラン設定:", currentCompany.planFeatures);
+      console.log("現在選択されているプラン:", selectedPlan);
     }
-  }, [currentCompany]);
+  }, [currentCompany, selectedPlan]);
 
   const handleUnlock = (e: React.FormEvent) => {
     e.preventDefault();

@@ -38,17 +38,31 @@ const Dashboard: React.FC = () => {
 
   // ユーザーのプランを判定（仮実装：companyIdに基づく）
   const getUserPlan = () => {
-    if (user?.companyId === 'memori.inc') {
-      return 'basicPlan';
-    } else if (user?.companyId === 'enterprise') {
-      return 'enterprisePlan';
-    } else {
-      return 'lightPlan';
-    }
+    // テスト用に一時的にライトプランに設定
+    return 'lightPlan';
+    
+    // 元のロジック（コメントアウト）
+    // if (user?.companyId === 'memori.inc') {
+    //   return 'basicPlan';
+    // } else if (user?.companyId === 'enterprise') {
+    //   return 'enterprisePlan';
+    // } else {
+    //   return 'lightPlan';
+    // }
   };
 
   const userPlan = getUserPlan();
   const planFeatures = currentCompany?.planFeatures?.[userPlan as keyof typeof currentCompany.planFeatures] || currentCompany?.planFeatures?.lightPlan;
+
+  // デバッグ情報をコンソールに出力
+  console.log('=== Dashboard Debug ===');
+  console.log('User Company ID:', user?.companyId);
+  console.log('Current Plan:', userPlan);
+  console.log('Plan Features:', planFeatures);
+  console.log('Opportunity Loss Enabled:', planFeatures?.opportunityLoss);
+  console.log('Contact Rate Enabled:', planFeatures?.contactRate);
+  console.log('Hourly Graph Enabled:', planFeatures?.hourlyGraph);
+  console.log('Opportunity Loss Graph Enabled:', planFeatures?.opportunityLossGraph);
 
   React.useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth <= 700);
