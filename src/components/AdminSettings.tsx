@@ -3,58 +3,6 @@ import { useCompany } from "../contexts/CompanyContext";
 
 const ADMIN_PASSWORD = "admin2025";
 
-// プラン別の機能設定
-const PLAN_CONFIGS = {
-  lightPlan: {
-    name: "ライトプラン",
-    price: "¥30,000 / 会期",
-    target: "初回導入・効果検証",
-    features: {
-      visitorCount: true,
-      staffExclusion: true,
-      averageTime: true,
-      hourlyGraph: true,
-      realtimeDashboard: false,
-      opportunityLoss: false,
-      contactRate: false,
-      opportunityLossGraph: false,
-      searchDashboard: false,
-    }
-  },
-  basicPlan: {
-    name: "ベーシックプラン",
-    price: "¥60,000 / 会期",
-    target: "改善提案・レポート重視層",
-    features: {
-      visitorCount: true,
-      staffExclusion: true,
-      averageTime: true,
-      hourlyGraph: true,
-      realtimeDashboard: true,
-      opportunityLoss: true,
-      contactRate: true,
-      opportunityLossGraph: true,
-      searchDashboard: false,
-    }
-  },
-  enterprisePlan: {
-    name: "エンタープライズプラン",
-    price: "¥120,000〜 / 会期",
-    target: "大規模・多拠点ブース運営企業",
-    features: {
-      visitorCount: true,
-      staffExclusion: true,
-      averageTime: true,
-      hourlyGraph: true,
-      realtimeDashboard: true,
-      opportunityLoss: true,
-      contactRate: true,
-      opportunityLossGraph: true,
-      searchDashboard: true,
-    }
-  }
-};
-
 const AdminSettings: React.FC = () => {
   const { currentCompany, updateCompanyConfig, setPlan } = useCompany();
   const [unlocked, setUnlocked] = useState(false);
@@ -136,22 +84,6 @@ const AdminSettings: React.FC = () => {
     }));
   };
 
-  const handlePlanChange = (planKey: 'lightPlan' | 'basicPlan' | 'enterprisePlan') => {
-    const planConfig = PLAN_CONFIGS[planKey];
-    
-    // CompanyContextの設定を更新
-    updateCompanyConfig({
-      planFeatures: {
-        lightPlan: planConfig.features,
-        basicPlan: planConfig.features,
-        enterprisePlan: planConfig.features
-      }
-    });
-    setPlan(planKey);
-    
-    alert(`${planConfig.name}の機能設定を適用しました！`);
-  };
-
   const handleSaveFeatures = () => {
     updateCompanyConfig({
       planFeatures: planFeatures
@@ -195,94 +127,6 @@ const AdminSettings: React.FC = () => {
             <textarea name="loss_zone" value={form.loss_zone} onChange={handleChange} style={{ width: "100%", padding: 8, marginTop: 8, minHeight: 60 }} />
           </label>
           
-          <h3 style={{ marginTop: 32, marginBottom: 16, color: "#333" }}>プラン別機能設定</h3>
-          
-          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-            {/* ライトプラン */}
-            <div style={{ padding: 20, border: "2px solid #667eea", borderRadius: 12, background: "#f8f9ff" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-                <h4 style={{ color: "#667eea", fontWeight: 700, fontSize: 18 }}>{PLAN_CONFIGS.lightPlan.name}</h4>
-                <span style={{ color: "#667eea", fontWeight: 600 }}>{PLAN_CONFIGS.lightPlan.price}</span>
-              </div>
-              <p style={{ color: "#666", marginBottom: 16, fontSize: 14 }}>{PLAN_CONFIGS.lightPlan.target}</p>
-              <div style={{ marginBottom: 16 }}>
-                <strong style={{ color: "#333" }}>提供内容:</strong>
-                <p style={{ color: "#666", fontSize: 14, marginTop: 4 }}>来場者カウント / スタッフ除外 / 平均滞在時間 / 時間帯別グラフ</p>
-              </div>
-              <button 
-                type="button"
-                onClick={() => handlePlanChange('lightPlan')}
-                style={{ 
-                  padding: "12px 24px", 
-                  background: "#667eea", 
-                  color: "#fff", 
-                  border: "none", 
-                  borderRadius: 8, 
-                  fontWeight: 700,
-                  cursor: "pointer"
-                }}
-              >
-                ライトプランを適用
-              </button>
-            </div>
-            
-            {/* ベーシックプラン */}
-            <div style={{ padding: 20, border: "2px solid #764ba2", borderRadius: 12, background: "#f8f4ff" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-                <h4 style={{ color: "#764ba2", fontWeight: 700, fontSize: 18 }}>{PLAN_CONFIGS.basicPlan.name}</h4>
-                <span style={{ color: "#764ba2", fontWeight: 600 }}>{PLAN_CONFIGS.basicPlan.price}</span>
-              </div>
-              <p style={{ color: "#666", marginBottom: 16, fontSize: 14 }}>{PLAN_CONFIGS.basicPlan.target}</p>
-              <div style={{ marginBottom: 16 }}>
-                <strong style={{ color: "#333" }}>提供内容:</strong>
-                <p style={{ color: "#666", fontSize: 14, marginTop: 4 }}>ライトプラン + 接触率 / 機会損失判定 / リアルタイムダッシュボード / 接触・損失率グラフ</p>
-              </div>
-              <button 
-                type="button"
-                onClick={() => handlePlanChange('basicPlan')}
-                style={{ 
-                  padding: "12px 24px", 
-                  background: "#764ba2", 
-                  color: "#fff", 
-                  border: "none", 
-                  borderRadius: 8, 
-                  fontWeight: 700,
-                  cursor: "pointer"
-                }}
-              >
-                ベーシックプランを適用
-              </button>
-            </div>
-            
-            {/* エンタープライズプラン */}
-            <div style={{ padding: 20, border: "2px solid #27ae60", borderRadius: 12, background: "#f4fff8" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-                <h4 style={{ color: "#27ae60", fontWeight: 700, fontSize: 18 }}>{PLAN_CONFIGS.enterprisePlan.name}</h4>
-                <span style={{ color: "#27ae60", fontWeight: 600 }}>{PLAN_CONFIGS.enterprisePlan.price}</span>
-              </div>
-              <p style={{ color: "#666", marginBottom: 16, fontSize: 14 }}>{PLAN_CONFIGS.enterprisePlan.target}</p>
-              <div style={{ marginBottom: 16 }}>
-                <strong style={{ color: "#333" }}>提供内容:</strong>
-                <p style={{ color: "#666", fontSize: 14, marginTop: 4 }}>ベーシックプラン + 複数カメラ / Jetson対応 / 専用Slack通知 / 拡張API連携など（見積ベース）</p>
-              </div>
-              <button 
-                type="button"
-                onClick={() => handlePlanChange('enterprisePlan')}
-                style={{ 
-                  padding: "12px 24px", 
-                  background: "#27ae60", 
-                  color: "#fff", 
-                  border: "none", 
-                  borderRadius: 8, 
-                  fontWeight: 700,
-                  cursor: "pointer"
-                }}
-              >
-                エンタープライズプランを適用
-              </button>
-            </div>
-          </div>
-
           <h3 style={{ marginTop: 32, marginBottom: 16, color: "#333" }}>詳細機能制限設定</h3>
           
           <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
