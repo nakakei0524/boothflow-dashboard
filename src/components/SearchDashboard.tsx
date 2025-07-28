@@ -274,11 +274,9 @@ const SearchDashboard: React.FC = React.memo(() => {
       <div
         className="dashboard-main"
         style={{
+          marginLeft: !isMobile && sidebarOpen ? "200px" : 0,
           transition: 'margin-left 0.2s',
           flex: 1,
-          maxWidth: 1000,
-          margin: '0 auto',
-          minWidth: 0,
         }}
       >
         {/* モバイル時のみメニューボタン表示 */}
