@@ -1,29 +1,29 @@
 const { Client } = require("@notionhq/client");
 
-// Notion API設定（環境変数から取得）
-const NOTION_API_KEY = process.env.NOTION_API_KEY;
-const DATABASE_ID = process.env.NOTION_DB_ID;
+// Notion API設定（環境変数から取得、フォールバック付き）
+const NOTION_API_KEY = process.env.NOTION_API_KEY || "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";
+const DATABASE_ID = process.env.NOTION_DB_ID || "229c750ed05980c78f08f384db78825f";
 
-if (!NOTION_API_KEY) {
-  throw new Error("NOTION_API_KEY environment variable is required");
-}
-
-if (!DATABASE_ID) {
-  throw new Error("NOTION_DB_ID environment variable is required");
-}
+console.log("Function loaded with:");
+console.log("- NOTION_API_KEY:", NOTION_API_KEY ? "SET" : "NOT SET");
+console.log("- DATABASE_ID:", DATABASE_ID);
 
 const notion = new Client({ auth: NOTION_API_KEY });
 
 exports.handler = async (event, context) => {
+  console.log("Function invoked with event:", event);
+  
   // CORSヘッダーを設定
   const headers = {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Headers": "Content-Type",
-    "Access-Control-Allow-Methods": "GET, OPTIONS"
+    "Access-Control-Allow-Methods": "GET, OPTIONS",
+    "Content-Type": "application/json"
   };
 
   // OPTIONSリクエスト（プリフライト）の処理
   if (event.httpMethod === "OPTIONS") {
+    console.log("Handling OPTIONS request");
     return {
       statusCode: 200,
       headers,
@@ -65,14 +65,18 @@ exports.handler = async (event, context) => {
 
     console.log("Final items count:", items.length);
 
+    const responseBody = {
+      success: true,
+      data: items,
+      count: items.length
+    };
+
+    console.log("Returning response:", responseBody);
+
     return {
       statusCode: 200,
       headers,
-      body: JSON.stringify({
-        success: true,
-        data: items,
-        count: items.length
-      }),
+      body: JSON.stringify(responseBody),
     };
   } catch (err) {
     console.error("Notion API Error:", err);
@@ -82,17 +86,21 @@ exports.handler = async (event, context) => {
       status: err.status
     });
     
+    const errorResponse = {
+      success: false,
+      error: err.message,
+      details: {
+        code: err.code,
+        status: err.status
+      }
+    };
+
+    console.log("Returning error response:", errorResponse);
+    
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ 
-        success: false,
-        error: err.message,
-        details: {
-          code: err.code,
-          status: err.status
-        }
-      }),
+      body: JSON.stringify(errorResponse),
     };
   }
 }; 

@@ -38,10 +38,24 @@ const Home: React.FC = () => {
       setError(null);
       try {
         // Netlify Functionsを使用してNotion APIを呼び出し
+        console.log("Fetching news from Netlify Functions...");
         const response = await fetch('/.netlify/functions/get-notion-news');
         
+        console.log("Response status:", response.status);
+        console.log("Response headers:", response.headers);
+        
         if (!response.ok) {
+          const errorText = await response.text();
+          console.error("HTTP Error:", response.status, errorText);
           throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          const text = await response.text();
+          console.error("Invalid content type:", contentType);
+          console.error("Response text:", text);
+          throw new Error("Invalid response format");
         }
 
         const data = await response.json();
