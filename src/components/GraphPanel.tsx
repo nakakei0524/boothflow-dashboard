@@ -152,41 +152,41 @@ const GraphPanel: React.FC<Props> = ({ data, id = "default" }) => {
             </Bar>
             {/* 接触数はベーシックプラン以上で表示 */}
             {planFeatures?.contactRate && (
-              <Line
-                type="monotone"
-                dataKey="contact"
-                stroke={`url(#contactGradient-${id})`}
-                strokeWidth={3}
-                name="接触数"
-                strokeDasharray="5 5"
-                dot={{ 
-                  r: 4, 
-                  fill: '#f97316',
-                  stroke: 'white',
-                  strokeWidth: 2
-                }}
-                activeDot={{ r: 6, stroke: '#f97316', strokeWidth: 2 }}
-                hide={isAllZero}
-              />
+            <Line
+              type="monotone"
+              dataKey="contact"
+              stroke={`url(#contactGradient-${id})`}
+              strokeWidth={3}
+              name="接触数"
+              strokeDasharray="5 5"
+              dot={{ 
+                r: 4, 
+                fill: '#f97316',
+                stroke: 'white',
+                strokeWidth: 2
+              }}
+              activeDot={{ r: 6, stroke: '#f97316', strokeWidth: 2 }}
+              hide={isAllZero}
+            />
             )}
             {/* 機会損失はベーシックプラン以上で表示 */}
             {planFeatures?.opportunityLoss && (
-              <Line
-                type="monotone"
-                dataKey="lost"
-                stroke={`url(#lostGradient-${id})`}
-                strokeWidth={3}
-                name="機会損失"
-                strokeDasharray="8 4"
-                dot={{ 
-                  r: 4, 
-                  fill: '#e11d48',
-                  stroke: 'white',
-                  strokeWidth: 2
-                }}
-                activeDot={{ r: 6, stroke: '#e11d48', strokeWidth: 2 }}
-                hide={isAllZero}
-              />
+            <Line
+              type="monotone"
+              dataKey="lost"
+              stroke={`url(#lostGradient-${id})`}
+              strokeWidth={3}
+              name="機会損失"
+              strokeDasharray="8 4"
+              dot={{ 
+                r: 4, 
+                fill: '#e11d48',
+                stroke: 'white',
+                strokeWidth: 2
+              }}
+              activeDot={{ r: 6, stroke: '#e11d48', strokeWidth: 2 }}
+              hide={isAllZero}
+            />
             )}
             
             {/* グラデーション定義 */}

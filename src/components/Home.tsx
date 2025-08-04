@@ -8,8 +8,12 @@ import MobileLayout from "./MobileLayout";
 import { useCompany } from "../contexts/CompanyContext";
 
 interface NotionNewsItem {
+  id: string;
   title: string;
   date: string;
+  description: string;
+  url: string;
+  status: string;
 }
 
 const Home: React.FC = () => {
@@ -29,8 +33,16 @@ const Home: React.FC = () => {
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const response = await axios.get("https://your-api-endpoint.com/get-notion-news");
-        setNewsList(response.data);
+        // 環境変数からAPIエンドポイントを取得
+        const apiEndpoint = process.env.REACT_APP_NOTION_API_ENDPOINT || 
+                          "https://your-api-endpoint.com/get-notion-news";
+        const response = await axios.get(apiEndpoint);
+        
+        if (response.data.success) {
+          setNewsList(response.data.data);
+        } else {
+          console.error("お知らせの取得に失敗しました", response.data.error);
+        }
       } catch (err) {
         console.error("お知らせの取得に失敗しました", err);
       }
@@ -82,9 +94,26 @@ const Home: React.FC = () => {
             <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
               {newsList.length > 0 ? (
                 newsList.map((item, idx) => (
-                  <li key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '6px 0', borderBottom: idx !== newsList.length - 1 ? '1px solid #eee' : 'none' }}>
-                    <span style={{ fontSize: 14 }}>{item.title}</span>
-                    <span style={{ fontSize: 12, color: '#888' }}>{item.date}</span>
+                  <li key={item.id} style={{ padding: '8px 0', borderBottom: idx !== newsList.length - 1 ? '1px solid #eee' : 'none' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 4 }}>
+                      <span style={{ fontSize: 14, fontWeight: 500, flex: 1 }}>{item.title}</span>
+                      <span style={{ fontSize: 12, color: '#888', marginLeft: 8 }}>{item.date}</span>
+                    </div>
+                    {item.description && (
+                      <p style={{ fontSize: 12, color: '#666', margin: '4px 0 0 0', lineHeight: 1.4 }}>
+                        {item.description}
+                      </p>
+                    )}
+                    {item.url && (
+                      <a 
+                        href={item.url} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        style={{ fontSize: 11, color: '#764ba2', textDecoration: 'none', display: 'inline-block', marginTop: 4 }}
+                      >
+                        詳細を見る →
+                      </a>
+                    )}
                   </li>
                 ))
               ) : (
@@ -146,16 +175,31 @@ const Home: React.FC = () => {
           <ul className="home-list">
             {newsList.length > 0 ? (
               newsList.map((item, idx) => (
-              <li key={idx}>
-                <span className="news-title">{item.title}</span>
-                <span className="news-date">{item.date}</span>
-              </li>
+                <li key={item.id} className="news-item">
+                  <div className="news-header">
+                    <span className="news-title">{item.title}</span>
+                    <span className="news-date">{item.date}</span>
+                  </div>
+                  {item.description && (
+                    <p className="news-description">{item.description}</p>
+                  )}
+                  {item.url && (
+                    <a 
+                      href={item.url} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="news-link"
+                    >
+                      詳細を見る →
+                    </a>
+                  )}
+                </li>
               ))
             ) : (
-            <li className="no-news">現在お知らせはありません</li>
+              <li className="no-news">現在お知らせはありません</li>
             )}
           </ul>
-      </div>
+        </div>
       <MobileNavBar />
     </div>
   );

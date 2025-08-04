@@ -203,7 +203,7 @@ const Dashboard: React.FC = () => {
           {hourlyData.length > 0 && (
             <div className="grid grid-cols-1">
               <div style={!planFeatures?.hourlyGraph ? { opacity: 0.5, background: '#eee' } : {}}>
-                <GraphPanel data={hourlyData} />
+              <GraphPanel data={hourlyData} />
                 {!planFeatures?.hourlyGraph && (
                   <div style={{ 
                     background: '#ff6b6b', 

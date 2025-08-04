@@ -260,8 +260,8 @@ const SearchDashboard: React.FC = React.memo(() => {
         {error && <p className="status-message error">{error}</p>}
         {!loading && (
           <>
-            <SummaryCards data={memoizedStats} />
-            <GraphPanel data={hourlyData} id="search" />
+          <SummaryCards data={memoizedStats} />
+          <GraphPanel data={hourlyData} id="search" />
           </>
         )}
         {isModalOpen && (

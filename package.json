@@ -29,7 +29,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "deploy:lambda": "serverless deploy",
+    "deploy:lambda:prod": "serverless deploy --stage production"
   },
   "eslintConfig": {
     "extends": [
@@ -52,6 +54,8 @@
   "devDependencies": {
     "autoprefixer": "^10.4.21",
     "postcss": "^8.5.6",
+    "serverless": "^3.38.0",
+    "serverless-dotenv-plugin": "^6.0.0",
     "tailwind": "^4.0.0",
     "tailwindcss": "^4.1.11"
   }
