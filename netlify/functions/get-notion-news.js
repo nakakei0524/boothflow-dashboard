@@ -1,7 +1,6 @@
-// get-notion-news.js
 const { Client } = require("@notionhq/client");
 
-// 環境変数からAPIキーを取得
+// Notion API設定（環境変数から取得）
 const NOTION_API_KEY = process.env.NOTION_API_KEY;
 const DATABASE_ID = process.env.NOTION_DB_ID;
 
@@ -15,7 +14,23 @@ if (!DATABASE_ID) {
 
 const notion = new Client({ auth: NOTION_API_KEY });
 
-exports.handler = async (event) => {
+exports.handler = async (event, context) => {
+  // CORSヘッダーを設定
+  const headers = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Methods": "GET, OPTIONS"
+  };
+
+  // OPTIONSリクエスト（プリフライト）の処理
+  if (event.httpMethod === "OPTIONS") {
+    return {
+      statusCode: 200,
+      headers,
+      body: ""
+    };
+  }
+
   console.log("Notion API Key:", NOTION_API_KEY.substring(0, 10) + "...");
   console.log("Database ID:", DATABASE_ID);
   
@@ -52,11 +67,7 @@ exports.handler = async (event) => {
 
     return {
       statusCode: 200,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers": "Content-Type",
-        "Access-Control-Allow-Methods": "GET, OPTIONS"
-      },
+      headers,
       body: JSON.stringify({
         success: true,
         data: items,
@@ -73,11 +84,7 @@ exports.handler = async (event) => {
     
     return {
       statusCode: 500,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers": "Content-Type",
-        "Access-Control-Allow-Methods": "GET, OPTIONS"
-      },
+      headers,
       body: JSON.stringify({ 
         success: false,
         error: err.message,
@@ -88,4 +95,4 @@ exports.handler = async (event) => {
       }),
     };
   }
-};
+}; 

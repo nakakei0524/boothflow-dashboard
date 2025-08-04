@@ -37,18 +37,21 @@ const Home: React.FC = () => {
       setIsLoading(true);
       setError(null);
       try {
-        // 環境変数からAPIエンドポイントを取得
-        const apiEndpoint = process.env.REACT_APP_NOTION_API_ENDPOINT || 
-                          "https://your-api-endpoint.com/get-notion-news";
+        // Netlify Functionsを使用してNotion APIを呼び出し
+        const response = await fetch('/.netlify/functions/get-notion-news');
         
-        console.log("Fetching news from:", apiEndpoint);
-        const response = await axios.get(apiEndpoint);
-        
-        if (response.data.success) {
-          setNewsList(response.data.data);
-          console.log("News fetched successfully:", response.data.data);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("Notion API response:", data);
+
+        if (data.success) {
+          setNewsList(data.data);
+          console.log("News fetched successfully:", data.data);
         } else {
-          console.error("お知らせの取得に失敗しました", response.data.error);
+          console.error("お知らせの取得に失敗しました", data.error);
           setError("お知らせの取得に失敗しました");
         }
       } catch (err) {
