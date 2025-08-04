@@ -18,6 +18,8 @@ interface NotionNewsItem {
 
 const Home: React.FC = () => {
   const [newsList, setNewsList] = useState<NotionNewsItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const [isMobile, setIsMobile] = useState(false);
   const { currentCompany } = useCompany();
@@ -32,23 +34,137 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     const fetchNews = async () => {
+      setIsLoading(true);
+      setError(null);
       try {
         // 環境変数からAPIエンドポイントを取得
         const apiEndpoint = process.env.REACT_APP_NOTION_API_ENDPOINT || 
                           "https://your-api-endpoint.com/get-notion-news";
+        
+        console.log("Fetching news from:", apiEndpoint);
         const response = await axios.get(apiEndpoint);
         
         if (response.data.success) {
           setNewsList(response.data.data);
+          console.log("News fetched successfully:", response.data.data);
         } else {
           console.error("お知らせの取得に失敗しました", response.data.error);
+          setError("お知らせの取得に失敗しました");
         }
       } catch (err) {
         console.error("お知らせの取得に失敗しました", err);
+        setError("お知らせの取得に失敗しました");
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchNews();
   }, []);
+
+  // 日付をフォーマットする関数
+  const formatDate = (dateString: string) => {
+    if (!dateString || dateString === "不明") return "不明";
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('ja-JP', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      });
+    } catch {
+      return dateString;
+    }
+  };
+
+  // ニュースセクションのレンダリング
+  const renderNewsSection = () => {
+    if (isLoading) {
+      return (
+        <div style={{ textAlign: 'center', padding: '20px', color: '#666' }}>
+          <div style={{ fontSize: '14px' }}>お知らせを読み込み中...</div>
+        </div>
+      );
+    }
+
+    if (error) {
+      return (
+        <div style={{ textAlign: 'center', padding: '20px', color: '#ff6b6b' }}>
+          <div style={{ fontSize: '14px' }}>{error}</div>
+        </div>
+      );
+    }
+
+    if (newsList.length === 0) {
+      return (
+        <div style={{ textAlign: 'center', padding: '20px', color: '#888' }}>
+          <div style={{ fontSize: '14px' }}>現在お知らせはありません</div>
+        </div>
+      );
+    }
+
+    return (
+      <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+        {newsList.map((item, idx) => (
+          <li key={item.id} style={{ 
+            padding: '12px 0', 
+            borderBottom: idx !== newsList.length - 1 ? '1px solid #eee' : 'none',
+            transition: 'background-color 0.2s'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 }}>
+              <span style={{ 
+                fontSize: '14px', 
+                fontWeight: 600, 
+                flex: 1,
+                color: '#333',
+                lineHeight: '1.4'
+              }}>
+                {item.title}
+              </span>
+              <span style={{ 
+                fontSize: '12px', 
+                color: '#888', 
+                marginLeft: 12,
+                whiteSpace: 'nowrap'
+              }}>
+                {formatDate(item.date)}
+              </span>
+            </div>
+            {item.description && (
+              <p style={{ 
+                fontSize: '13px', 
+                color: '#666', 
+                margin: '6px 0 0 0', 
+                lineHeight: '1.5',
+                display: '-webkit-box',
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden'
+              }}>
+                {item.description}
+              </p>
+            )}
+            {item.url && (
+              <a 
+                href={item.url} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                style={{ 
+                  fontSize: '12px', 
+                  color: '#764ba2', 
+                  textDecoration: 'none', 
+                  display: 'inline-block', 
+                  marginTop: 8,
+                  fontWeight: 500
+                }}
+              >
+                詳細を見る →
+              </a>
+            )}
+          </li>
+        ))}
+      </ul>
+    );
+  };
 
   // スマホ専用デザイン
   if (isMobile) {
@@ -90,36 +206,8 @@ const Home: React.FC = () => {
           </div>
           {/* お知らせ */}
           <div style={{ background: '#fff', borderRadius: 12, padding: 16, boxShadow: '0 2px 8px #bdbdbd22' }}>
-            <h2 style={{ fontSize: 16, fontWeight: 700, marginBottom: 8 }}>Bflowからのお知らせ</h2>
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-              {newsList.length > 0 ? (
-                newsList.map((item, idx) => (
-                  <li key={item.id} style={{ padding: '8px 0', borderBottom: idx !== newsList.length - 1 ? '1px solid #eee' : 'none' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 4 }}>
-                      <span style={{ fontSize: 14, fontWeight: 500, flex: 1 }}>{item.title}</span>
-                      <span style={{ fontSize: 12, color: '#888', marginLeft: 8 }}>{item.date}</span>
-                    </div>
-                    {item.description && (
-                      <p style={{ fontSize: 12, color: '#666', margin: '4px 0 0 0', lineHeight: 1.4 }}>
-                        {item.description}
-                      </p>
-                    )}
-                    {item.url && (
-                      <a 
-                        href={item.url} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        style={{ fontSize: 11, color: '#764ba2', textDecoration: 'none', display: 'inline-block', marginTop: 4 }}
-                      >
-                        詳細を見る →
-                      </a>
-                    )}
-                  </li>
-                ))
-              ) : (
-                <li style={{ color: '#888', fontSize: 14 }}>現在お知らせはありません</li>
-              )}
-            </ul>
+            <h2 style={{ fontSize: 16, fontWeight: 700, marginBottom: 12 }}>Bflowからのお知らせ</h2>
+            {renderNewsSection()}
           </div>
         </div>
       </MobileLayout>
@@ -172,33 +260,9 @@ const Home: React.FC = () => {
       </div>
         <div className="home-section">
           <h2 className="home-subtitle">Bflowからのお知らせ</h2>
-          <ul className="home-list">
-            {newsList.length > 0 ? (
-              newsList.map((item, idx) => (
-                <li key={item.id} className="news-item">
-                  <div className="news-header">
-                    <span className="news-title">{item.title}</span>
-                    <span className="news-date">{item.date}</span>
-                  </div>
-                  {item.description && (
-                    <p className="news-description">{item.description}</p>
-                  )}
-                  {item.url && (
-                    <a 
-                      href={item.url} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="news-link"
-                    >
-                      詳細を見る →
-                    </a>
-                  )}
-                </li>
-              ))
-            ) : (
-              <li className="no-news">現在お知らせはありません</li>
-            )}
-          </ul>
+          <div className="news-container">
+            {renderNewsSection()}
+          </div>
         </div>
       <MobileNavBar />
     </div>
