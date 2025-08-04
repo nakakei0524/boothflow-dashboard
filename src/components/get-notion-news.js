@@ -26,7 +26,7 @@ exports.handler = async (event) => {
       sorts: [{ property: "Date", direction: "descending" }],
       filter: {
         property: "Status",
-        select: {
+        status: {
           equals: "公開"
         }
       },
@@ -42,7 +42,7 @@ exports.handler = async (event) => {
         date: page.properties.Date?.date?.start || "不明",
         description: page.properties.Description?.rich_text[0]?.plain_text || "",
         url: page.url,
-        status: page.properties.Status?.select?.name || "下書き"
+        status: page.properties.Status?.status?.name || "下書き"
       };
       console.log("Processed item:", item);
       return item;
