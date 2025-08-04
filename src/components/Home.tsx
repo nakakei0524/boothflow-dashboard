@@ -37,31 +37,29 @@ const Home: React.FC = () => {
       setIsLoading(true);
       setError(null);
       try {
-        // テスト用のダミーデータを使用
-        console.log("Loading test news data...");
+        // Netlify Functionsを使用してNotion APIを呼び出し
+        console.log("Fetching news from Netlify Functions...");
         
-        // 実際のNotionデータベースから取得したテストデータ
-        const testItems = [
-          {
-            id: 'test-1',
-            title: 'サービスリリースのお知らせ',
-            date: '2025-08-04',
-            description: 'ここに本文が入ります。',
-            url: 'https://www.notion.so/229c750ed05980c78f08f384db78825f?v=229c750ed0598032b11f000c6c38371a',
-            status: '公開'
-          },
-          {
-            id: 'test-2',
-            title: 'BoothFlow機能アップデート',
-            date: '2025-08-03',
-            description: '新しい機能が追加されました。',
-            url: 'https://www.notion.so/229c750ed05980c78f08f384db78825f?v=229c750ed0598032b11f000c6c38371a',
-            status: '公開'
-          }
-        ];
+        const response = await fetch('/.netlify/functions/get-notion-news');
+        
+        console.log("Response status:", response.status);
+        
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error("HTTP Error:", response.status, errorText);
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
-        setNewsList(testItems);
-        console.log("Test news loaded successfully:", testItems);
+        const data = await response.json();
+        console.log("Notion API response:", data);
+
+        if (data.success) {
+          setNewsList(data.data);
+          console.log("News fetched successfully:", data.data);
+        } else {
+          console.error("お知らせの取得に失敗しました", data.error);
+          setError("お知らせの取得に失敗しました");
+        }
       } catch (err) {
         console.error("お知らせの取得に失敗しました", err);
         setError("お知らせの取得に失敗しました");
