@@ -51,6 +51,13 @@ const AdminSettings: React.FC = () => {
     },
   });
 
+  // プラン名のマッピング
+  const planNameMap = {
+    lightPlan: "ライトプラン",
+    basicPlan: "ベーシックプラン",
+    enterprisePlan: "エンタープライズプラン"
+  };
+
   // 初期化時に現在の設定を読み込み
   React.useEffect(() => {
     if (currentCompany?.planFeatures) {
@@ -92,6 +99,11 @@ const AdminSettings: React.FC = () => {
     alert("機能制限設定を保存しました！");
   };
 
+  const handlePlanChange = (plan: string) => {
+    setPlan(plan);
+    alert(`${planNameMap[plan as keyof typeof planNameMap]}に切り替えました！`);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // ここでAPI送信や保存処理を実装
@@ -127,6 +139,93 @@ const AdminSettings: React.FC = () => {
           <label>loss_zone（例: [[100,300],[400,300],[400,400],[100,400]]）
             <textarea name="loss_zone" value={form.loss_zone} onChange={handleChange} style={{ width: "100%", padding: 8, marginTop: 8, minHeight: 60 }} />
           </label>
+          
+          <h3 style={{ marginTop: 32, marginBottom: 16, color: "#333" }}>プラン切り替え</h3>
+          
+          {/* 現在のプラン表示 */}
+          <div style={{ 
+            padding: 16, 
+            background: "#f8f9fa", 
+            borderRadius: 8, 
+            border: "1px solid #dee2e6",
+            marginBottom: 16
+          }}>
+            <div style={{ fontWeight: 600, marginBottom: 8 }}>現在のプラン:</div>
+            <div style={{ 
+              fontSize: 18, 
+              fontWeight: 700, 
+              color: "#667eea",
+              display: "flex",
+              alignItems: "center",
+              gap: 8
+            }}>
+              {planNameMap[selectedPlan as keyof typeof planNameMap]}
+              <span style={{ 
+                fontSize: 12, 
+                background: "#28a745", 
+                color: "#fff", 
+                padding: "4px 8px", 
+                borderRadius: 4 
+              }}>
+                アクティブ
+              </span>
+            </div>
+          </div>
+
+          {/* プラン選択ボタン */}
+          <div style={{ display: "flex", gap: 12, marginBottom: 24 }}>
+            <button
+              type="button"
+              onClick={() => handlePlanChange('lightPlan')}
+              style={{
+                flex: 1,
+                padding: "12px 16px",
+                background: selectedPlan === 'lightPlan' ? "#667eea" : "#f8f9fa",
+                color: selectedPlan === 'lightPlan' ? "#fff" : "#333",
+                border: "1px solid #667eea",
+                borderRadius: 8,
+                fontWeight: 600,
+                cursor: "pointer",
+                transition: "all 0.2s"
+              }}
+            >
+              ライトプラン
+            </button>
+            <button
+              type="button"
+              onClick={() => handlePlanChange('basicPlan')}
+              style={{
+                flex: 1,
+                padding: "12px 16px",
+                background: selectedPlan === 'basicPlan' ? "#764ba2" : "#f8f9fa",
+                color: selectedPlan === 'basicPlan' ? "#fff" : "#333",
+                border: "1px solid #764ba2",
+                borderRadius: 8,
+                fontWeight: 600,
+                cursor: "pointer",
+                transition: "all 0.2s"
+              }}
+            >
+              ベーシックプラン
+            </button>
+            <button
+              type="button"
+              onClick={() => handlePlanChange('enterprisePlan')}
+              style={{
+                flex: 1,
+                padding: "12px 16px",
+                background: selectedPlan === 'enterprisePlan' ? "#27ae60" : "#f8f9fa",
+                color: selectedPlan === 'enterprisePlan' ? "#fff" : "#333",
+                border: "1px solid #27ae60",
+                borderRadius: 8,
+                fontWeight: 600,
+                cursor: "pointer",
+                transition: "all 0.2s"
+              }}
+            >
+              エンタープライズプラン
+            </button>
+          </div>
           
           <h3 style={{ marginTop: 32, marginBottom: 16, color: "#333" }}>詳細機能制限設定</h3>
           
