@@ -94,7 +94,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle }) => {
   const planNameMap: Record<string, string> = {
     lightPlan: 'ライトプラン',
     basicPlan: 'ベーシックプラン',
-    enterprisePlan: 'エンタープライズプラン',
+    enterprisePlan: '月額プラン',
   };
 
   // 現在のプランの機能を取得
